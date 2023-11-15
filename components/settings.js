@@ -5,6 +5,7 @@ export default function Settings() {
     return (
         <View>
             <Text>This is the Settings page</Text>
+            <Text>Added last change</Text>
         </View>
     );
 }
