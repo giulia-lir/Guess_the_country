@@ -20,7 +20,8 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-pager-view": "6.2.0",
     "expo-font": "~11.4.0",
-    "expo-splash-screen": "~0.20.5"
+    "expo-splash-screen": "~0.20.5",
+    "expo-sqlite": "~11.3.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
