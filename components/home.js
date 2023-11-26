@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { Alert, Image, View, ScrollView, StyleSheet, Text, Button } from 'react-native';
 import * as SQLite from 'expo-sqlite';
+import GuessTheFlagGame from './game';
 
 const db = SQLite.openDatabase('countriesdb.db');
 const API_URL = 'https://restcountries.com/v2/all';
@@ -9,6 +10,7 @@ const API_URL = 'https://restcountries.com/v2/all';
 export default function Home() {
 
   const [countriesList, setCountriesList] = useState([]);
+  const [startGame, setStartGame] = useState(false);
 
   useEffect(() => {
     db.transaction(tx => {
@@ -81,19 +83,33 @@ export default function Home() {
     }
   }
   
+  const handleStartGame = () => {
+    setStartGame(true);
+  };
+
+  /*
+  <ScrollView>
+    <Text style={styles.fontStyle}>This is the Home page</Text>
+    {countriesList.map(savedCountry => (
+        <View key={savedCountry.name}>
+            <Text>{`Name: ${savedCountry.name}`}</Text>
+            <Text>{`Flag:`}</Text>
+            <Image source={{uri: savedCountry.flag}} style={{ width: 100, height: 70 }} />
+            <Text>{`Region: ${savedCountry.region}`}</Text>
+            <Text>------</Text>
+        </View>
+    ))}
+  </ScrollView>
+  */
+  
   return (
-      <ScrollView>
-          <Text style={styles.fontStyle}>This is the Home page</Text>
-          {countriesList.map(savedCountry => (
-              <View key={savedCountry.name}>
-                  <Text>{`Name: ${savedCountry.name}`}</Text>
-                  <Text>{`Flag:`}</Text>
-                  <Image source={{uri: savedCountry.flag}} style={{ width: 100, height: 70 }} />
-                  <Text>{`Region: ${savedCountry.region}`}</Text>
-                  <Text>------</Text>
-              </View>
-          ))}
-      </ScrollView>
+    <View>
+      {startGame ? (
+        <GuessTheFlagGame countries={countriesList} selectedRegion="Worldwide" />
+      ) : (
+        <Button title="Start Guess The Flag Game" onPress={handleStartGame} />
+      )}
+    </View>
   );
 }
 
