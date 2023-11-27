@@ -13,6 +13,7 @@ export default function Home() {
   const [countriesList, setCountriesList] = useState([]);
   const [startGame, setStartGame] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState();
+  const uniqueRegions = new Set();
 
   useEffect(() => {
     db.transaction(tx => {
@@ -99,6 +100,20 @@ export default function Home() {
     setStartGame(true);
   };
 
+  countriesList
+    .filter(country => country.region !== undefined && country.region !== '')
+    .forEach(country => uniqueRegions.add(country.region));
+
+  const pickerItems = [...uniqueRegions].map((region, index) => {
+    const countriesInRegion = countriesList.filter(country => country.region === region);
+    
+    // Check to exclude regions such as Polar or Antarctica with less than 15 countries
+    if (countriesInRegion.length >= 15) {
+      return <Picker.Item key={index} label={region} value={region} />;
+    } else {
+      return null;
+    }
+  });
   /*
   {startGame ? (
         <GuessTheFlagGame countries={countriesList} selectedRegion={selectedRegion} />
@@ -117,12 +132,8 @@ export default function Home() {
           setSelectedRegion(itemValue)
         }>
           <Picker.Item label="Choose a continent" value="" />
-          <Picker.Item label="Africa" value="Africa" />
-          <Picker.Item label="Americas" value="Americas" />
-          <Picker.Item label="Asia" value="Asia" />
-          <Picker.Item label="Europe" value="Europe" />
-          <Picker.Item label="Oceania" value="Oceania" />
           <Picker.Item label="Worldwide" value="Worldwide" />
+          {pickerItems}
       </Picker>)}
       {/* Button disabled if no region is selected */}
       {startGame ? (
