@@ -10,8 +10,13 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   // Render the question (flag) with answers (4 buttons, 1 correct option)
   useEffect(() => {
     // Filter countries to be adjusted by region, if worldwide is selected all countries count
-    const filteredCountries = countries.filter(country =>
-      selectedRegion === 'Worldwide' ? true : country.region === selectedRegion
+    const filteredCountries = countries.filter(country => {
+      if (selectedRegion === 'Worldwide') {
+        return true; // Include all countries when 'Worldwide' is selected
+      } else {
+        return country.region === selectedRegion;
+      }
+    }
     );
 
     const randomCountry = filteredCountries[Math.floor(Math.random() * filteredCountries.length)]; // Need to check and avoid duplicates

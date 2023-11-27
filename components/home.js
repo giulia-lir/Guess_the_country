@@ -1,6 +1,7 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Alert, Image, View, ScrollView, StyleSheet, Text, Button } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 import * as SQLite from 'expo-sqlite';
 import GuessTheFlagGame from './game';
 
@@ -11,6 +12,7 @@ export default function Home() {
 
   const [countriesList, setCountriesList] = useState([]);
   const [startGame, setStartGame] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState();
 
   useEffect(() => {
     db.transaction(tx => {
@@ -82,32 +84,51 @@ export default function Home() {
 
     }
   }
+
+  const pickerRef = useRef();
+
+  function open() {
+    pickerRef.current.focus();
+  }
+
+  function close() {
+    pickerRef.current.blur();
+  }
   
   const handleStartGame = () => {
     setStartGame(true);
   };
 
   /*
-  <ScrollView>
-    <Text style={styles.fontStyle}>This is the Home page</Text>
-    {countriesList.map(savedCountry => (
-        <View key={savedCountry.name}>
-            <Text>{`Name: ${savedCountry.name}`}</Text>
-            <Text>{`Flag:`}</Text>
-            <Image source={{uri: savedCountry.flag}} style={{ width: 100, height: 70 }} />
-            <Text>{`Region: ${savedCountry.region}`}</Text>
-            <Text>------</Text>
-        </View>
-    ))}
-  </ScrollView>
+  {startGame ? (
+        <GuessTheFlagGame countries={countriesList} selectedRegion={selectedRegion} />
+      ) : (
+        <Button title="Start Guess The Flag Game" onPress={handleStartGame} />
+      )}
   */
   
   return (
     <View>
+      {/* Picker rendered only if no game is started */}
+      {!startGame && (<Picker
+        ref={pickerRef}
+        selectedValue={selectedRegion}
+        onValueChange={(itemValue, itemIndex) =>
+          setSelectedRegion(itemValue)
+        }>
+          <Picker.Item label="Choose a continent" value="" />
+          <Picker.Item label="Africa" value="Africa" />
+          <Picker.Item label="Americas" value="Americas" />
+          <Picker.Item label="Asia" value="Asia" />
+          <Picker.Item label="Europe" value="Europe" />
+          <Picker.Item label="Oceania" value="Oceania" />
+          <Picker.Item label="Worldwide" value="Worldwide" />
+      </Picker>)}
+      {/* Button disabled if no region is selected */}
       {startGame ? (
-        <GuessTheFlagGame countries={countriesList} selectedRegion="Worldwide" />
+        <GuessTheFlagGame countries={countriesList} selectedRegion={selectedRegion} />
       ) : (
-        <Button title="Start Guess The Flag Game" onPress={handleStartGame} />
+        <Button title="Start Guess The Flag Game" onPress={handleStartGame} disabled={startGame || selectedRegion === ''}/>
       )}
     </View>
   );
