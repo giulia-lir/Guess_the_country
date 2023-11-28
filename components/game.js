@@ -69,6 +69,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     }, 500);
   };
 
+  // Fixed 25 flag questions for the Worldwide mode
   if (selectedRegion == 'Worldwide' && currentQuestion >= 25) {
     return (
       <View>
@@ -79,6 +80,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     );
   }
 
+  // Fixed 15 flag questions for a selected continent
   if (selectedRegion != 'Worldwide' && currentQuestion >= 15) {
     return (
       <View>
