@@ -7,6 +7,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [currentOptions, setCurrentOptions] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [replayGame, setReplayGame] = useState(false);
+  const [buttonColor, setButtonColor] = useState(['#CB64C6', '#CB64C6', '#CB64C6', '#CB64C6']);
 
   // Render the question (flag) with answers (4 buttons, 1 correct option)
   useEffect(() => {
@@ -50,20 +51,35 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     return options.sort(() => Math.random() - 0.5);
   };
 
-  const handleOptionPress = selectedCountry => {
+  const handleOptionPress = (selectedCountry, index) => {
+    const newButtonColor = [...buttonColor];
 
     if (selectedCountry === correctAnswer) {
       setScore(score + 1);
+      newButtonColor[index] = '#09B400';
+    } else {
+      newButtonColor[index] = '#D90600';
     }
+
+    setButtonColor(newButtonColor);
 
     setTimeout(() => {
       setCurrentQuestion(currentQuestion + 1);
+      setButtonColor(['#CB64C6', '#CB64C6', '#CB64C6', '#CB64C6'])
     }, 500);
-    // add green color for correct answer (always show), red color for incorrect answer and delay a couple seconds transition to next question
-    //setCurrentQuestion(currentQuestion + 1);
   };
 
-  if (currentQuestion >= 15) {
+  if (selectedRegion == 'Worldwide' && currentQuestion >= 25) {
+    return (
+      <View>
+        <Text>Game Over!</Text>
+        <Text>Your Score: {score}</Text>
+        <Button title="Replay" onPress={() => setReplayGame(true)} />
+      </View>
+    );
+  }
+
+  if (selectedRegion != 'Worldwide' && currentQuestion >= 15) {
     return (
       <View>
         <Text>Game Over!</Text>
@@ -76,9 +92,9 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   return (
     <View>
       <Text>Question {currentQuestion + 1}</Text>
-      <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={{ width: '90%', aspectRatio: 5 / 3 }} />
-      {currentOptions.map(option => (
-        <Button key={option} title={option} onPress={() => handleOptionPress(option)} />
+      <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={{ width: '80%', aspectRatio: 5 / 3 }} />
+      {currentOptions.map((option, index) => (
+        <Button key={option} title={option} onPress={() => handleOptionPress(option, index)} color={buttonColor[index]} />
       ))}
     </View>
   );
