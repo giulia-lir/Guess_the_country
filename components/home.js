@@ -100,6 +100,10 @@ export default function Home() {
     setStartGame(true);
   };
 
+  const handleQuitGame = () => {
+    setStartGame(false);
+  };
+
   countriesList
     .filter(country => country.region !== undefined && country.region !== '')
     .forEach(country => uniqueRegions.add(country.region));
@@ -137,7 +141,11 @@ export default function Home() {
       </Picker>)}
       {/* Button disabled if no region is selected */}
       {startGame ? (
-        <GuessTheFlagGame countries={countriesList} selectedRegion={selectedRegion} />
+        <View>
+          <GuessTheFlagGame countries={countriesList} selectedRegion={selectedRegion} />
+          {/* Display quit button if game is in progress */}
+          <Button title="Quit" onPress={handleQuitGame} />
+        </View>
       ) : (
         <Button title="Start Guess The Flag Game" onPress={handleStartGame} disabled={startGame || selectedRegion === ''}/>
       )}

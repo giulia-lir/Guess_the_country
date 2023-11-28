@@ -6,30 +6,35 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [score, setScore] = useState(0);
   const [currentOptions, setCurrentOptions] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState('');
+  const [replayGame, setReplayGame] = useState(false);
 
   // Render the question (flag) with answers (4 buttons, 1 correct option)
   useEffect(() => {
-    // Filter countries to be adjusted by region, if worldwide is selected all countries count
-    const filteredCountries = countries.filter(country => {
-      if (selectedRegion === 'Worldwide') {
-        return true; // Include all countries when 'Worldwide' is selected
-      } else {
-        return country.region === selectedRegion;
-      }
-    }
-    );
+    if (replayGame) {
+      setScore(0);
+      setCurrentQuestion(0);
+      setReplayGame(false);
+    } else {
+      // Filter countries to be adjusted by region, if worldwide is selected all countries count
+      const filteredCountries = countries.filter(country => {
+        if (selectedRegion === 'Worldwide') {
+          return true; // Include all countries when 'Worldwide' is selected
+        } else {
+          return country.region === selectedRegion;
+        }
+      });
 
-    const randomCountry = filteredCountries[Math.floor(Math.random() * filteredCountries.length)]; // Need to check and avoid duplicates
+      const randomCountry = filteredCountries[Math.floor(Math.random() * filteredCountries.length)]; // Need to check and avoid duplicates
 
-    const options = getRandomOptions(filteredCountries, randomCountry);
+      const options = getRandomOptions(filteredCountries, randomCountry);
 
-    setCorrectAnswer(randomCountry.name);
+      setCorrectAnswer(randomCountry.name);
 
-    setCurrentOptions(options);
+      setCurrentOptions(options);
     
     // Add styling, question transition animation
-
-  }, [currentQuestion, selectedRegion]);
+    }
+  }, [currentQuestion, selectedRegion, replayGame]);
 
   const getRandomOptions = (countries, correctCountry) => {
     const options = [correctCountry.name];
@@ -46,11 +51,16 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   };
 
   const handleOptionPress = selectedCountry => {
+
     if (selectedCountry === correctAnswer) {
       setScore(score + 1);
     }
+
+    setTimeout(() => {
+      setCurrentQuestion(currentQuestion + 1);
+    }, 500);
     // add green color for correct answer (always show), red color for incorrect answer and delay a couple seconds transition to next question
-    setCurrentQuestion(currentQuestion + 1);
+    //setCurrentQuestion(currentQuestion + 1);
   };
 
   if (currentQuestion >= 15) {
@@ -58,17 +68,16 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
       <View>
         <Text>Game Over!</Text>
         <Text>Your Score: {score}</Text>
+        <Button title="Replay" onPress={() => setReplayGame(true)} />
       </View>
     );
-    // Add restart or choose another game buttons
   }
 
   return (
     <View>
       <Text>Question {currentQuestion + 1}</Text>
-      <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={{ width: 100, height: 70 }} />
+      <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={{ width: '90%', aspectRatio: 5 / 3 }} />
       {currentOptions.map(option => (
-        // Instead of button, dropdown selection to add for region/type of game
         <Button key={option} title={option} onPress={() => handleOptionPress(option)} />
       ))}
     </View>
