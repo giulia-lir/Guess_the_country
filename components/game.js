@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Image } from 'react-native';
+import { ImageBackground, View, Text, Button, Image, StyleSheet } from 'react-native';
 
 export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -92,9 +92,11 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   }
 
   return (
-    <View>
-      <Text>Question {currentQuestion + 1}</Text>
-      <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={{ width: '80%', aspectRatio: 5 / 3 }} />
+    <View style={styles.viewStyle}>
+      <Text style={styles.fontStyle} >Question {currentQuestion + 1}</Text>
+        <ImageBackground  resizeMode="cover" style={styles.shadowImage}>
+          <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={styles.flagStyle} />
+        </ImageBackground>
       {currentOptions.map((option, index) => (
         <Button key={option} title={option} onPress={() => handleOptionPress(option, index)} color={buttonColor[index]} />
       ))}
@@ -103,3 +105,34 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
 };
 
 // Make it fabulous
+const styles = StyleSheet.create({
+  viewStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fontStyle: {
+    fontFamily: 'PlaypenSans',
+    fontSize: 20,
+    color: 'black',
+  },
+  shadowImage: {
+    width: '80%',
+    height: 200,
+    zIndex: 1,
+    backgroundColor: 'black',
+    borderRadius: 15,
+    position: 'relative',
+    margin: 10
+  },
+  flagStyle: {
+    width: '99%',
+    height: 200,
+    objectFit: 'contain', // Render image maintaining aspect ratio for flags
+    borderWidth: 3,
+    borderColor: 'grey',
+    borderRadius: 15,
+    zIndex: 2,
+    marginLeft: -10,
+    marginTop: -10
+  },
+});
