@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ImageBackground, View, Text, Button, Image, StyleSheet } from 'react-native';
+import { ImageBackground, View, Text, Pressable, Image, StyleSheet } from 'react-native';
 
 export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -7,7 +7,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [currentOptions, setCurrentOptions] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [replayGame, setReplayGame] = useState(false);
-  const [buttonColor, setButtonColor] = useState(['#CB64C6', '#CB64C6', '#CB64C6', '#CB64C6']);
+  const [buttonColor, setButtonColor] = useState(['#CFCA89', '#33CCCC', '#CFCA89', '#33CCCC']);
 
   // Render the question (flag) with answers (4 buttons, 1 correct option)
   useEffect(() => {
@@ -38,12 +38,12 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   }, [currentQuestion, selectedRegion, replayGame]);
 
   const getRandomOptions = (countries, correctCountry) => {
-    const options = [correctCountry.name];
+    const options = [correctCountry.name.toUpperCase()];
 
     while (options.length < 4) {
       const randomCountry = countries[Math.floor(Math.random() * countries.length)];
       if (!options.includes(randomCountry.name)) {
-        options.push(randomCountry.name);
+        options.push(randomCountry.name.toUpperCase());
       }
     }
 
@@ -53,8 +53,8 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
 
   const handleOptionPress = (selectedCountry, index) => {
     const newButtonColor = [...buttonColor];
-
-    if (selectedCountry === correctAnswer) {
+    
+    if (selectedCountry === correctAnswer.toUpperCase()) {
       setScore(score + 1);
       newButtonColor[index] = '#09B400';
     } else {
@@ -65,7 +65,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
 
     setTimeout(() => {
       setCurrentQuestion(currentQuestion + 1);
-      setButtonColor(['#CB64C6', '#CB64C6', '#CB64C6', '#CB64C6'])
+      setButtonColor(['#CFCA89', '#33CCCC', '#CFCA89', '#33CCCC'])
     }, 500);
   };
 
@@ -75,7 +75,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
       <View>
         <Text>Game Over!</Text>
         <Text>Your Score: {score}</Text>
-        <Button title="Replay" onPress={() => setReplayGame(true)} />
+        <Pressable title="Replay" onPress={() => setReplayGame(true)} />
       </View>
     );
   }
@@ -86,19 +86,25 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
       <View>
         <Text>Game Over!</Text>
         <Text>Your Score: {score}</Text>
-        <Button title="Replay" onPress={() => setReplayGame(true)} />
+        <Pressable title="Replay" onPress={() => setReplayGame(true)} />
       </View>
     );
   }
 
   return (
     <View style={styles.viewStyle}>
-      <Text style={styles.fontStyle} >Question {currentQuestion + 1}</Text>
+      <Text style={[styles.fontStyle, styles.headerSize]} >Question {currentQuestion + 1}</Text>
         <ImageBackground  resizeMode="cover" style={styles.shadowImage}>
           <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={styles.flagStyle} />
         </ImageBackground>
       {currentOptions.map((option, index) => (
-        <Button key={option} title={option} onPress={() => handleOptionPress(option, index)} color={buttonColor[index]} />
+        <Pressable onPress={() => handleOptionPress(option, index)} style={{
+          ...styles.optionsStyle,
+          ...styles.optionSize,
+          backgroundColor: buttonColor[index],
+        }}>
+          <Text key={option} title={option} style={{...styles.fontStyle, textAlign: 'center'}}>{option}</Text>
+        </Pressable>
       ))}
     </View>
   );
@@ -111,9 +117,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   fontStyle: {
-    fontFamily: 'PlaypenSans',
-    fontSize: 20,
+    fontFamily: 'PlaypenSansBold',
     color: 'black',
+  },
+  headerSize: {
+    fontSize: 20
+  },
+  optionSize: {
+    fontSize: 15,
   },
   shadowImage: {
     width: '80%',
@@ -134,5 +145,13 @@ const styles = StyleSheet.create({
     zIndex: 2,
     marginLeft: -10,
     marginTop: -10
+  },
+  optionsStyle: {
+    width: '70%',
+    margin: 15,
+    padding: 10,
+    borderRadius: 15,
+    borderColor: 'black',
+    borderWidth: 3,
   },
 });
