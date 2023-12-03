@@ -41,8 +41,16 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     const options = [correctCountry.name.toUpperCase()];
 
     while (options.length < 4) {
+
       const randomCountry = countries[Math.floor(Math.random() * countries.length)];
-      if (!options.includes(randomCountry.name)) {
+
+      // Avoid false incorrect answers for Norway and Svalbard, which share same flag
+      const isCorrectOrExcluded =
+        randomCountry.name === correctCountry.name ||
+        (correctCountry.name === 'Norway' && randomCountry.name === 'Svalbard and Jan Mayen') ||
+        (correctCountry.name === 'Svalbard and Jan Mayen' && randomCountry.name === 'Norway');
+
+      if (!options.includes(randomCountry.name) && !isCorrectOrExcluded) {
         options.push(randomCountry.name.toUpperCase());
       }
     }
@@ -53,7 +61,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
 
   const handleOptionPress = (selectedCountry, index) => {
     const newButtonColor = [...buttonColor];
-    
+
     if (selectedCountry === correctAnswer.toUpperCase()) {
       setScore(score + 1);
       newButtonColor[index] = '#09B400';
@@ -106,8 +114,8 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
           ...styles.optionsStyle,
           ...styles.optionSize,
           backgroundColor: buttonColor[index],
-        }}>
-          <Text key={option} title={option} style={{...styles.fontStyle, textAlign: 'center'}}>{option}</Text>
+        }} key={option}>
+          <Text title={option} style={{...styles.fontStyle, textAlign: 'center'}}>{option}</Text>
         </Pressable>
       ))}
     </View>

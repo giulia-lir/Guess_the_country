@@ -26,12 +26,15 @@ export default function Home() {
         console.log(rows._array.length)
         if (rows._array.length > 0) {
           const countriesFromDB = Array.from(rows._array).map(row => ({
+            id: row.id,
             name: row.name,
             flag: row.flag,
             region: row.region,
           }));
+          
           //console.log('Countries from DB:', countriesFromDB); // Log the countries fetched from the database
           setCountriesList(countriesFromDB);
+          
         } else {
           console.log('No records found in the database.');
           fetchCountries();
@@ -48,40 +51,40 @@ export default function Home() {
 
   const fetchCountries = () => {
     if (countriesList.length === 0) {
-        fetch(API_URL)
-        .then(response => response.json())
-        .then(data => {
-            const countries = data.map(country => ({
-                name: country.name,
-                flag: country.flags.png,
-                region: country.region,
-                })
-            );
+      fetch(API_URL)
+      .then(response => response.json())
+      .then(data => {
+          const countries = data.map(country => ({
+              name: country.name,
+              flag: country.flags.png,
+              region: country.region,
+              })
+          );
 
-            setCountriesList(countries);
+          setCountriesList(countries);
 
-            countries.forEach(country => {
-                db.transaction(tx => {
-                  tx.executeSql(
-                    'INSERT OR IGNORE INTO countries (name, flag, region) VALUES (?, ?, ?);',
-                    [country.name, country.flag, country.region],
-                    (_, resultSet) => {
-                      if (resultSet.rowsAffected > 0) {
-                        console.log(`Country "${country.name}" inserted into the database.`);
-                      } else {
-                        console.log(`Country "${country.name}" already exists in the database.`);
-                      }
-                    },
-                    (_, error) => {
-                      console.error(`Error inserting country "${country.name}" into the database:`, error);
+          countries.forEach(country => {
+              db.transaction(tx => {
+                tx.executeSql(
+                  'INSERT OR IGNORE INTO countries (name, flag, region) VALUES (?, ?, ?);',
+                  [country.name, country.flag, country.region],
+                  (_, resultSet) => {
+                    if (resultSet.rowsAffected > 0) {
+                      console.log(`Country "${country.name}" inserted into the database.`);
+                    } else {
+                      console.log(`Country "${country.name}" already exists in the database.`);
                     }
-                  );
-                });
-            });
+                  },
+                  (_, error) => {
+                    console.error(`Error inserting country "${country.name}" into the database:`, error);
+                  }
+                );
+              });
+          });
         })
-        .catch(err => {
-          Alert.alert('Error', err.message)
-        });
+      .catch(err => {
+        Alert.alert('Error', err.message)
+      });
 
     }
   }
