@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ImageBackground, View, Text, Pressable, Image, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Animated, ImageBackground, View, Text, Pressable, Image, StyleSheet } from 'react-native';
 
 export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -8,8 +8,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [replayGame, setReplayGame] = useState(false);
   const [buttonColor, setButtonColor] = useState(['#CFCA89', '#33CCCC', '#CFCA89', '#33CCCC']);
-
-  //console.log(countries)
+  const slideAnim = useRef(new Animated.Value(500)).current;
 
   // Render the question (flag) with answers (4 buttons, 1 correct option)
   useEffect(() => {
@@ -17,6 +16,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
       setScore(0);
       setCurrentQuestion(0);
       setReplayGame(false);
+      slideAnim.setValue(500);
     } else {
       // Filter countries to be adjusted by region, if worldwide is selected all countries count
       const filteredCountries = countries.filter(country => {
@@ -35,9 +35,24 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
 
       setCurrentOptions(options);
     
-    // Add styling, question transition animation
     }
   }, [currentQuestion, selectedRegion, replayGame]);
+
+  // Add question transition animation
+  useEffect(() => {
+    if (currentOptions.length > 0) {
+      const animations = currentOptions.map((_, index) => {
+        return Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 500,
+          delay: index * 100,
+          useNativeDriver: false,
+        });
+      });
+
+      Animated.sequence(animations).start();
+    }
+  }, [currentOptions, slideAnim]);
 
   const getRandomOptions = (countries, correctCountry) => {
     const options = [correctCountry.name.toUpperCase()];
@@ -70,10 +85,11 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     } else {
       newButtonColor[index] = '#D90600';
     }
-
+    
     setButtonColor(newButtonColor);
-
+    
     setTimeout(() => {
+      slideAnim.setValue(500);
       setCurrentQuestion(currentQuestion + 1);
       setButtonColor(['#CFCA89', '#33CCCC', '#CFCA89', '#33CCCC'])
     }, 500);
@@ -113,13 +129,20 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
           <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={styles.flagStyle} />
         </ImageBackground>
       {currentOptions.map((option, index) => (
-        <Pressable onPress={() => handleOptionPress(option, index)} style={{
-          ...styles.optionsStyle,
-          ...styles.optionSize,
-          backgroundColor: buttonColor[index],
-        }} key={option}>
-          <Text title={option} style={{...styles.fontStyle, textAlign: 'center'}}>{option}</Text>
-        </Pressable>
+        <Animated.View
+          key={option}
+          style={{
+            ...styles.optionsStyle,
+            ...styles.optionSize,
+            backgroundColor: buttonColor[index],
+            transform: [{ translateY: slideAnim }],
+          }}>
+          <Pressable onPress={() => handleOptionPress(option, index)}>
+            <Text title={option} style={{ ...styles.fontStyle, textAlign: 'center' }}>
+              {option}
+            </Text>
+          </Pressable>
+        </Animated.View>
       ))}
     </View>
   );
