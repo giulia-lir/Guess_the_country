@@ -32,7 +32,7 @@ export default function App() {
           // tabStyle: styles.tabStyle,  specific tab style
           tabBarLabelStyle: styles.tabFontStyle,
         }} onLayout={onLayoutRootView}>
-        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Play" component={Home} />
         <Tab.Screen name="Settings" component={Settings} />
       </Tab.Navigator>
     </NavigationContainer>

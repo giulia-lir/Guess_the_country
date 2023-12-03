@@ -132,25 +132,31 @@ export default function Home() {
   return (
     <View>
       {/* Picker rendered only if no game is started */}
-      {!startGame && (<Picker
-        ref={pickerRef}
-        selectedValue={selectedRegion}
-        onValueChange={(itemValue, itemIndex) =>
-          setSelectedRegion(itemValue)
-        }>
-          <Picker.Item label="Choose a continent" value="" />
-          <Picker.Item label="Worldwide" value="Worldwide" />
-          {pickerItems}
-      </Picker>)}
+      {!startGame && (
+        <View style={styles.practiceView}>
+          <Text style={styles.practiceTitle}>Practice</Text>
+          <Text style={styles.fontStyle}>Practice your flags knowledge with this easy game. 25 questions for Worldwide type, 15 questions for any selected continent.</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              ref={pickerRef}
+              selectedValue={selectedRegion}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedRegion(itemValue)
+            }>
+              <Picker.Item label="Choose a continent" value="" />
+              <Picker.Item label="Worldwide" value="Worldwide" />
+              {pickerItems}
+            </Picker>
+          </View>
+          <Button title="Start Guess The Flag Game" onPress={handleStartGame} disabled={startGame || selectedRegion === ''}/>
+        </View>)}
       {/* Button disabled if no region is selected */}
-      {startGame ? (
+      {startGame && (
         <View>
           <GuessTheFlagGame countries={countriesList} selectedRegion={selectedRegion} />
           {/* Display quit button if game is in progress */}
           <Button title="Quit" onPress={handleQuitGame} />
         </View>
-      ) : (
-        <Button title="Start Guess The Flag Game" onPress={handleStartGame} disabled={startGame || selectedRegion === ''}/>
       )}
     </View>
   );
@@ -161,5 +167,24 @@ const styles = StyleSheet.create({
       fontFamily: 'PlaypenSans',
       fontSize: 20,
       color: 'black'
-    }
+    },
+    practiceView: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'pink',
+      margin: 10,
+      padding: 10,
+    },
+    pickerContainer: {
+      width: '90%',
+      marginTop: 10,
+      borderColor: 'grey',
+      borderWidth: 1,
+      borderRadius: 15
+    },
+    practiceTitle: {
+      fontFamily: 'PlaypenSansBold',
+      fontSize: 20,
+      color: 'black'
+    },
   });
