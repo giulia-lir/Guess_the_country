@@ -75,7 +75,9 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
       <View>
         <Text>Game Over!</Text>
         <Text>Your Score: {score}</Text>
-        <Pressable title="Replay" onPress={() => setReplayGame(true)} />
+        <Pressable title="Replay" onPress={() => setReplayGame(true)} style={styles.replayButtonStyle}>
+          <Text>Replay</Text>
+        </Pressable>
       </View>
     );
   }
@@ -86,7 +88,9 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
       <View>
         <Text>Game Over!</Text>
         <Text>Your Score: {score}</Text>
-        <Pressable title="Replay" onPress={() => setReplayGame(true)} />
+        <Pressable title="Replay" onPress={() => setReplayGame(true)} style={styles.replayButtonStyle}>
+          <Text>Replay</Text>
+        </Pressable>
       </View>
     );
   }
@@ -153,5 +157,13 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderColor: 'black',
     borderWidth: 3,
+  },
+  replayButtonStyle: {
+    backgroundColor: '#135E98',
+    borderRadius: 15,
+    padding: 10,
+    margin: 20,
+    width: '30%',
+    
   },
 });
