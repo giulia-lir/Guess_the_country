@@ -4,6 +4,7 @@ import { Alert, Image, View, ScrollView, StyleSheet, Text, Button } from 'react-
 import {Picker} from '@react-native-picker/picker';
 import * as SQLite from 'expo-sqlite';
 import GuessTheFlagGame from './game';
+import EndlessQuizChallenge from './endless_quiz'
 
 const db = SQLite.openDatabase('countriesdb.db');
 const API_URL = 'https://restcountries.com/v2/all';
@@ -14,6 +15,7 @@ export default function Home() {
   const [startGame, setStartGame] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState();
   const uniqueRegions = new Set();
+  const [startEndlessQuiz, setStartEndlessQuiz] = useState(false);
 
   useEffect(() => {
     db.transaction(tx => {
@@ -107,6 +109,14 @@ export default function Home() {
     setStartGame(false);
   };
 
+  const handleStartEndlessQuiz = () => {
+    setStartEndlessQuiz(true);
+  };
+
+  const handleQuitEndlessQuiz = () => {
+    setStartEndlessQuiz(false);
+  };
+
   countriesList
     .filter(country => country.region !== undefined && country.region !== '')
     .forEach(country => uniqueRegions.add(country.region));
@@ -121,41 +131,49 @@ export default function Home() {
       return null;
     }
   });
-  /*
-  {startGame ? (
-        <GuessTheFlagGame countries={countriesList} selectedRegion={selectedRegion} />
-      ) : (
-        <Button title="Start Guess The Flag Game" onPress={handleStartGame} />
-      )}
-  */
   
   return (
     <View>
       {/* Picker rendered only if no game is started */}
-      {!startGame && (
-        <View style={styles.practiceView}>
-          <Text style={styles.practiceTitle}>Practice</Text>
-          <Text style={styles.fontStyle}>Practice your flags knowledge with this easy game. 25 questions for Worldwide type, 15 questions for any selected continent.</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              ref={pickerRef}
-              selectedValue={selectedRegion}
-              onValueChange={(itemValue, itemIndex) =>
-                setSelectedRegion(itemValue)
-            }>
-              <Picker.Item label="Choose a continent" value="" />
-              <Picker.Item label="Worldwide" value="Worldwide" />
-              {pickerItems}
-            </Picker>
+      {!startGame && !startEndlessQuiz && (
+        <View>
+          <View style={styles.practiceView}>
+            <Text style={styles.titleStyle}>PRACTICE</Text>
+            <Text style={styles.fontStyle}>Practice your flags knowledge with this easy game. 25 questions for Worldwide type, 15 questions for any selected continent.</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                ref={pickerRef}
+                selectedValue={selectedRegion}
+                onValueChange={(itemValue, itemIndex) =>
+                  setSelectedRegion(itemValue)
+              }>
+                <Picker.Item label="Choose a continent" value="" />
+                <Picker.Item label="Worldwide" value="Worldwide" />
+                {pickerItems}
+              </Picker>
+            </View>
+            <Button title="Start Guess The Flag Game" onPress={handleStartGame} disabled={startGame || selectedRegion === ''}/>
           </View>
-          <Button title="Start Guess The Flag Game" onPress={handleStartGame} disabled={startGame || selectedRegion === ''}/>
-        </View>)}
+          <View style={styles.practiceView}>
+            <Text style={styles.titleStyle}>ENDLESS CHALLENGE</Text>
+            <Text style={styles.fontStyle}>Challenge yourself in this game. Questions keep coming as long as you guess them correctly and rack up points! Scores can be featured in the global leaderboards.</Text>
+            <Button title="Start Endless Quiz" onPress={handleStartEndlessQuiz} />
+          </View>
+        </View>
+        )}
       {/* Button disabled if no region is selected */}
       {startGame && (
         <View>
           <GuessTheFlagGame countries={countriesList} selectedRegion={selectedRegion} />
           {/* Display quit button if game is in progress */}
           <Button title="Quit" onPress={handleQuitGame} />
+        </View>
+      )}
+      {startEndlessQuiz && (
+        <View>
+          <EndlessQuizChallenge countries={countriesList} />
+          {/* Display quit button if game is in progress */}
+          <Button title="Quit" onPress={handleQuitEndlessQuiz} />
         </View>
       )}
     </View>
@@ -172,6 +190,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'pink',
+      borderRadius: 15,
       margin: 10,
       padding: 10,
     },
@@ -182,7 +201,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderRadius: 15
     },
-    practiceTitle: {
+    titleStyle: {
       fontFamily: 'PlaypenSansBold',
       fontSize: 20,
       color: 'black'
