@@ -9,6 +9,8 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [replayGame, setReplayGame] = useState(false);
   const [buttonColor, setButtonColor] = useState(['#CFCA89', '#33CCCC', '#CFCA89', '#33CCCC']);
 
+  //console.log(countries)
+
   // Render the question (flag) with answers (4 buttons, 1 correct option)
   useEffect(() => {
     if (replayGame) {
@@ -50,11 +52,11 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
         (correctCountry.name === 'Norway' && randomCountry.name === 'Svalbard and Jan Mayen') ||
         (correctCountry.name === 'Svalbard and Jan Mayen' && randomCountry.name === 'Norway');
 
-      if (!options.includes(randomCountry.name) && !isCorrectOrExcluded) {
+      if (!options.includes(randomCountry.name.toUpperCase()) && !isCorrectOrExcluded) {
         options.push(randomCountry.name.toUpperCase());
       }
     }
-
+    
     // Shuffle the options
     return options.sort(() => Math.random() - 0.5);
   };
@@ -106,6 +108,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   return (
     <View style={styles.viewStyle}>
       <Text style={[styles.fontStyle, styles.headerSize]} >Question {currentQuestion + 1}</Text>
+      <Text style={[styles.fontStyle, styles.headerSize]} >Score: {score}</Text>
         <ImageBackground  resizeMode="cover" style={styles.shadowImage}>
           <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={styles.flagStyle} />
         </ImageBackground>
