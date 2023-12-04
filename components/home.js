@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Alert, Image, View, ScrollView, StyleSheet, Text, Button } from 'react-native';
+import { Alert, View, ScrollView, StyleSheet, Text, Button, Pressable } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import * as SQLite from 'expo-sqlite';
 import GuessTheFlagGame from './game';
@@ -152,12 +152,22 @@ export default function Home() {
                 {pickerItems}
               </Picker>
             </View>
-            <Button title="Start Guess The Flag Game" onPress={handleStartGame} disabled={startGame || selectedRegion === ''}/>
+            <Pressable 
+              onPress={handleStartGame}
+              disabled={startGame || selectedRegion === ''}
+              style={(startGame || selectedRegion === '' 
+                ? styles.pressableDisabledStyle
+                : styles.pressableStyle)}
+            >
+              <Text style={styles.titleStyle}>Start Guessing</Text>
+            </Pressable>
           </View>
           <View style={styles.practiceView}>
             <Text style={styles.titleStyle}>ENDLESS CHALLENGE</Text>
             <Text style={styles.fontStyle}>Challenge yourself in this game. Questions keep coming as long as you guess them correctly and rack up points! Scores can be featured in the global leaderboards.</Text>
-            <Button title="Start Endless Quiz" onPress={handleStartEndlessQuiz} />
+            <Pressable title="Start Endless Quiz" onPress={handleStartEndlessQuiz} style={styles.pressableStyle}>
+              <Text style={styles.titleStyle}>Start Endless Quiz</Text>
+            </Pressable>
           </View>
         </View>
         )}
@@ -213,4 +223,20 @@ const styles = StyleSheet.create({
       fontSize: 20,
       color: 'black'
     },
+    pressableStyle: {
+      backgroundColor: '#FF6F61',
+      padding: 10,
+      margin: 10,
+      borderRadius: 15,
+      borderColor: 'black',
+      borderWidth: 3
+    },
+    pressableDisabledStyle: {
+      backgroundColor: '#BBB5B5',
+      padding: 10,
+      margin: 10,
+      borderRadius: 15,
+      borderColor: 'black',
+      borderWidth: 3
+    }
   });
