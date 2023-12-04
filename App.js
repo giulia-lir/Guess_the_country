@@ -2,10 +2,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import Home from './components/home';
-import Settings from './components/settings';
+import Scoreboards from './components/scoreboards';
 import { useCallback } from 'react';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons'; 
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -32,8 +35,24 @@ export default function App() {
           // tabStyle: styles.tabStyle,  specific tab style
           tabBarLabelStyle: styles.tabFontStyle,
         }} onLayout={onLayoutRootView}>
-        <Tab.Screen name="Play" component={Home} />
-        <Tab.Screen name="Settings" component={Settings} />
+        <Tab.Screen 
+          name="Games" 
+          component={Home} 
+          options={{
+              tabBarIcon: () => (
+                <FontAwesome5 name="font-awesome-flag" size={23} color="#3498db" />
+              ),
+            }}
+        />
+        <Tab.Screen 
+          name="Scoreboards" 
+          component={Scoreboards} 
+          options={{
+            tabBarIcon: () => (
+              <FontAwesome name="trophy" size={25} color="#3498db" />
+            ),
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );
@@ -49,11 +68,11 @@ const styles = StyleSheet.create({
   },
   navigatorTabsStyle: {
     marginTop: 50,
-    backgroundColor: '#40E0D0',
+    backgroundColor: '#ecf0f1',
   },
   tabFontStyle: {
     fontFamily: 'PlaypenSansBold',
-    fontSize: 16,
-    color: 'black'
+    fontSize: 12,
+    color: '#3498db'
   }
 });

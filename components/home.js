@@ -4,7 +4,8 @@ import { Alert, Image, View, ScrollView, StyleSheet, Text, Button } from 'react-
 import {Picker} from '@react-native-picker/picker';
 import * as SQLite from 'expo-sqlite';
 import GuessTheFlagGame from './game';
-import EndlessQuizChallenge from './endless_quiz'
+import EndlessQuizChallenge from './endless_quiz';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const db = SQLite.openDatabase('countriesdb.db');
 const API_URL = 'https://restcountries.com/v2/all';
@@ -133,7 +134,7 @@ export default function Home() {
   });
   
   return (
-    <View>
+    <View style={styles.homeViewStyle}>
       {/* Picker rendered only if no game is started */}
       {!startGame && !startEndlessQuiz && (
         <View>
@@ -186,10 +187,17 @@ const styles = StyleSheet.create({
       fontSize: 20,
       color: 'black'
     },
+    homeViewStyle: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: '#FEDD6E'
+    },
     practiceView: {
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'pink',
+      backgroundColor: '#ecf0f1',
+      borderWidth: 3,
+      borderColor: '#3498db',
       borderRadius: 15,
       margin: 10,
       padding: 10,
@@ -197,7 +205,7 @@ const styles = StyleSheet.create({
     pickerContainer: {
       width: '90%',
       marginTop: 10,
-      borderColor: 'grey',
+      borderColor: '#FF6F61',
       borderWidth: 1,
       borderRadius: 15
     },

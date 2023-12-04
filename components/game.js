@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Animated, ImageBackground, View, Text, Pressable, Image, StyleSheet } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -7,7 +8,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [currentOptions, setCurrentOptions] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [replayGame, setReplayGame] = useState(false);
-  const [buttonColor, setButtonColor] = useState(['#CFCA89', '#33CCCC', '#CFCA89', '#33CCCC']);
+  const [buttonColor, setButtonColor] = useState(['#ecf0f1', '#ecf0f1', '#ecf0f1', '#ecf0f1']);
   const slideAnim = useRef(new Animated.Value(500)).current;
 
   // Render the question (flag) with answers (4 buttons, 1 correct option)
@@ -91,7 +92,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     setTimeout(() => {
       slideAnim.setValue(500);
       setCurrentQuestion(currentQuestion + 1);
-      setButtonColor(['#CFCA89', '#33CCCC', '#CFCA89', '#33CCCC'])
+      setButtonColor(['#ecf0f1', '#ecf0f1', '#ecf0f1', '#ecf0f1'])
     }, 500);
   };
 
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     width: '80%',
     height: 200,
     zIndex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#BE9A22',
     borderRadius: 15,
     position: 'relative',
     margin: 10
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
     height: 200,
     objectFit: 'contain', // Render image maintaining aspect ratio for flags
     borderWidth: 3,
-    borderColor: 'grey',
+    borderColor: 'black',
     borderRadius: 15,
     zIndex: 2,
     marginLeft: -10,
@@ -189,11 +190,11 @@ const styles = StyleSheet.create({
     margin: 15,
     padding: 10,
     borderRadius: 15,
-    borderColor: 'black',
+    borderColor: '#3498db',
     borderWidth: 3,
   },
   replayButtonStyle: {
-    backgroundColor: '#135E98',
+    backgroundColor: '#3498db',
     borderRadius: 15,
     padding: 10,
     margin: 20,
