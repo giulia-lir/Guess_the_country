@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Animated, ImageBackground, View, Text, Pressable, Image, StyleSheet } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default EndlessQuizChallenge = ({countries}) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -126,6 +125,11 @@ export default EndlessQuizChallenge = ({countries}) => {
       </View>
     ); 
 }
+
+/* To avoid so much redundant code, Babel and Metro could be configured to read css files and traslate them to JS, so not to have repetitive styling as suggested at
+Link: https://sparkbox.com/foundry/style_react_native_apps_with_css_syntax_and_classes_using_babel_and_metro
+*/
+
 const styles = StyleSheet.create({
     viewStyle: {
       justifyContent: 'center',

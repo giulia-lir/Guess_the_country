@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Animated, ImageBackground, View, Text, Pressable, Image, StyleSheet } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);

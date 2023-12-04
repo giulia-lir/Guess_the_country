@@ -5,7 +5,6 @@ import {Picker} from '@react-native-picker/picker';
 import * as SQLite from 'expo-sqlite';
 import GuessTheFlagGame from './game';
 import EndlessQuizChallenge from './endless_quiz';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 const db = SQLite.openDatabase('countriesdb.db');
 const API_URL = 'https://restcountries.com/v2/all';
