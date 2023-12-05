@@ -3,7 +3,7 @@ import { Animated, ImageBackground, View, Text, Pressable, Image, StyleSheet } f
 
 export default EndlessQuizChallenge = ({countries}) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [score, setScore] = useState(0);
+    const [challengeScore, setChallengeScore] = useState(0);
     const [currentOptions, setCurrentOptions] = useState([]);
     const [correctAnswer, setCorrectAnswer] = useState('');
     const [gameOver, setGameOver] = useState(false);
@@ -14,7 +14,7 @@ export default EndlessQuizChallenge = ({countries}) => {
     // Render the question (flag) with answers (4 buttons, 1 correct option)
     useEffect(() => {
       if (replayGame) {
-        setScore(0);
+        setChallengeScore(0);
         setCurrentQuestion(0);
         setGameOver(false);
         setReplayGame(false);
@@ -71,7 +71,7 @@ export default EndlessQuizChallenge = ({countries}) => {
       const newButtonColor = [...buttonColor];
   
       if (selectedCountry === correctAnswer.toUpperCase()) {
-        setScore(score + 1);
+        setChallengeScore(challengeScore + 1);
         newButtonColor[index] = '#09B400';
       } else {
         newButtonColor[index] = '#D90600';
@@ -91,7 +91,7 @@ export default EndlessQuizChallenge = ({countries}) => {
       return (
         <View>
           <Text>Game Over!</Text>
-          <Text>Your Score: {score}</Text>
+          <Text>Your Score: {challengeScore}</Text>
           <Pressable title="Replay" onPress={() => setReplayGame(true)} style={styles.replayButtonStyle}>
             <Text>Replay</Text>
           </Pressable>
@@ -102,7 +102,7 @@ export default EndlessQuizChallenge = ({countries}) => {
     return (
       <View style={styles.viewStyle}>
         <Text style={[styles.fontStyle, styles.headerSize]} >Question {currentQuestion + 1}</Text>
-        <Text style={[styles.fontStyle, styles.headerSize]} >Score: {score}</Text>
+        <Text style={[styles.fontStyle, styles.headerSize]} >Score: {challengeScore}</Text>
           <ImageBackground  resizeMode="cover" style={styles.shadowImage}>
             <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={styles.flagStyle} />
           </ImageBackground>
