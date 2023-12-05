@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Alert, View, ScrollView, StyleSheet, Text, Button, Pressable } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import * as SQLite from 'expo-sqlite';
+import { Ionicons } from '@expo/vector-icons';
 import GuessTheFlagGame from './game';
 import EndlessQuizChallenge from './endless_quiz';
 
@@ -159,14 +160,14 @@ export default function Home() {
                 ? styles.pressableDisabledStyle
                 : styles.pressableStyle)}
             >
-              <Text style={styles.titleStyle}>Start Guessing</Text>
+              <Text style={styles.titleStyle}><Ionicons name="play" size={24} color="black" /> Start Guessing</Text>
             </Pressable>
           </View>
           <View style={styles.practiceView}>
             <Text style={styles.titleStyle}>ENDLESS CHALLENGE</Text>
             <Text style={styles.fontStyle}>Challenge yourself in this game. Questions keep coming as long as you guess them correctly and rack up points! Scores can be featured in the global leaderboards.</Text>
             <Pressable title="Start Endless Quiz" onPress={handleStartEndlessQuiz} style={styles.pressableStyle}>
-              <Text style={styles.titleStyle}>Start Endless Quiz</Text>
+              <Text style={styles.titleStyle}><Ionicons name="play" size={24} color="black" /> Start Endless Quiz</Text>
             </Pressable>
           </View>
         </View>
