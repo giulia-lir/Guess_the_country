@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import * as SQLite from 'expo-sqlite';
 import { Animated, ImageBackground, View, Text, Pressable, Image, StyleSheet } from 'react-native';
+import db from './home';
 
-export default EndlessQuizChallenge = ({countries}) => {
+export default EndlessQuizChallenge = ({db, countries}) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [challengeScore, setChallengeScore] = useState(0);
+    const [endlessScore, setEndlessScore] = useState(0);
     const [currentOptions, setCurrentOptions] = useState([]);
     const [correctAnswer, setCorrectAnswer] = useState('');
     const [gameOver, setGameOver] = useState(false);
@@ -14,7 +16,7 @@ export default EndlessQuizChallenge = ({countries}) => {
     // Render the question (flag) with answers (4 buttons, 1 correct option)
     useEffect(() => {
       if (replayGame) {
-        setChallengeScore(0);
+        setEndlessScore(0);
         setCurrentQuestion(0);
         setGameOver(false);
         setReplayGame(false);
@@ -71,7 +73,7 @@ export default EndlessQuizChallenge = ({countries}) => {
       const newButtonColor = [...buttonColor];
   
       if (selectedCountry === correctAnswer.toUpperCase()) {
-        setChallengeScore(challengeScore + 1);
+        setEndlessScore(endlessScore + 1);
         newButtonColor[index] = '#09B400';
       } else {
         newButtonColor[index] = '#D90600';
@@ -87,11 +89,19 @@ export default EndlessQuizChallenge = ({countries}) => {
       }, 500);
     };
 
+    const saveScore = () => {
+      db.transaction(tx => {
+          tx.executeSql('insert into endless_scores (score) values (?);', endlessScore);    
+        }, null, updateList
+      )
+      setEndlessScore(0)
+    }
+
     if (gameOver) {
       return (
         <View>
           <Text>Game Over!</Text>
-          <Text>Your Score: {challengeScore}</Text>
+          <Text>Your Score: {endlessScore}</Text>
           <Pressable title="Replay" onPress={() => setReplayGame(true)} style={styles.replayButtonStyle}>
             <Text>Replay</Text>
           </Pressable>
@@ -102,7 +112,7 @@ export default EndlessQuizChallenge = ({countries}) => {
     return (
       <View style={styles.viewStyle}>
         <Text style={[styles.fontStyle, styles.headerSize]} >Question {currentQuestion + 1}</Text>
-        <Text style={[styles.fontStyle, styles.headerSize]} >Score: {challengeScore}</Text>
+        <Text style={[styles.fontStyle, styles.headerSize]} >Score: {endlessScore}</Text>
           <ImageBackground  resizeMode="cover" style={styles.shadowImage}>
             <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={styles.flagStyle} />
           </ImageBackground>

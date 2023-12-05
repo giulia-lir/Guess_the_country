@@ -23,6 +23,10 @@ export default function Home() {
       tx.executeSql('create table if not exists countries (id integer primary key not null, name text, flag text, region text);');
     }, () => console.error("Error when creating DB"), );
     
+    db.transaction(tx => {
+      tx.executeSql('create table if not exists endless_scores (id integer primary key not null, endless_score integer, time_stamp datetime default current_timestamp);');
+    }, () => console.error("Error when creating DB"), );
+
     console.log('hi im elfo')
     db.transaction(tx => {
       tx.executeSql('select * from countries', [], (_, { rows }) => {
