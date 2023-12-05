@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { Animated, ImageBackground, View, Text, Pressable, Image, StyleSheet } from 'react-native';
-import db from './home';
 
 export default EndlessQuizChallenge = ({db, countries}) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -9,32 +8,29 @@ export default EndlessQuizChallenge = ({db, countries}) => {
     const [currentOptions, setCurrentOptions] = useState([]);
     const [correctAnswer, setCorrectAnswer] = useState('');
     const [gameOver, setGameOver] = useState(false);
-    const [replayGame, setReplayGame] = useState(false);
     const [buttonColor, setButtonColor] = useState(['#ecf0f1', '#ecf0f1', '#ecf0f1', '#ecf0f1']);
     const slideAnim = useRef(new Animated.Value(500)).current;
   
-    // Render the question (flag) with answers (4 buttons, 1 correct option)
-    useEffect(() => {
-      if (replayGame) {
-        setEndlessScore(0);
-        setCurrentQuestion(0);
-        setGameOver(false);
-        setReplayGame(false);
-        slideAnim.setValue(500);
-      } else {
-        const endlessCountries = countries;
-        const randomCountry = endlessCountries[Math.floor(Math.random() * endlessCountries.length)]; // Need to check and avoid duplicates
-        const options = getRandomOptions(endlessCountries, randomCountry);
-  
-        setCorrectAnswer(randomCountry.name);
-        setCurrentOptions(options);
-      }
-    }, [currentQuestion, replayGame]);
-  
-    // Add question transition animation
-    useEffect(() => {
-      if (currentOptions.length > 0) {
-        const animations = currentOptions.map((_, index) => {
+    const restartEndlessChallenge = () => {
+      slideAnim.setValue(500);
+      setButtonColor(['#ecf0f1', '#ecf0f1', '#ecf0f1', '#ecf0f1'])
+      setEndlessScore(0);
+      setCurrentQuestion(0);
+      setGameOver(false);
+      startRound();
+    }
+
+    const startRound = () => {
+      const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+      const options = getRandomOptions(countries, randomCountry);
+      setCorrectAnswer(randomCountry.name);
+      setCurrentOptions(options);
+      optionsAnimationEffect(options);
+    }
+
+    const optionsAnimationEffect = (options) => {
+      if (options.length > 0) {
+        const animations = options.map((_, index) => {
           return Animated.timing(slideAnim, {
             toValue: 0,
             duration: 500,
@@ -42,10 +38,9 @@ export default EndlessQuizChallenge = ({db, countries}) => {
             useNativeDriver: false,
           });
         });
-  
         Animated.sequence(animations).start();
       }
-    }, [currentOptions, slideAnim]);
+    }
   
     const getRandomOptions = (countries, correctCountry) => {
       const options = [correctCountry.name.toUpperCase()];
@@ -75,18 +70,17 @@ export default EndlessQuizChallenge = ({db, countries}) => {
       if (selectedCountry === correctAnswer.toUpperCase()) {
         setEndlessScore(endlessScore + 1);
         newButtonColor[index] = '#09B400';
+        setTimeout(() => {
+          slideAnim.setValue(500);
+          setCurrentQuestion(currentQuestion + 1);
+          setButtonColor(['#ecf0f1', '#ecf0f1', '#ecf0f1', '#ecf0f1'])
+          startRound();
+        }, 500);
       } else {
         newButtonColor[index] = '#D90600';
-        setGameOver(true)
+        setTimeout(() => {setGameOver(true)}, 500)
       }
-      
       setButtonColor(newButtonColor);
-      
-      setTimeout(() => {
-        slideAnim.setValue(500);
-        setCurrentQuestion(currentQuestion + 1);
-        setButtonColor(['#ecf0f1', '#ecf0f1', '#ecf0f1', '#ecf0f1'])
-      }, 500);
     };
 
     const saveScore = () => {
@@ -94,46 +88,52 @@ export default EndlessQuizChallenge = ({db, countries}) => {
           tx.executeSql('insert into endless_scores (score) values (?);', endlessScore);    
         }, null, updateList
       )
-      setEndlessScore(0)
     }
-
-    if (gameOver) {
-      return (
-        <View>
-          <Text>Game Over!</Text>
-          <Text>Your Score: {endlessScore}</Text>
-          <Pressable title="Replay" onPress={() => setReplayGame(true)} style={styles.replayButtonStyle}>
-            <Text>Replay</Text>
-          </Pressable>
-        </View>
-      );
-    }
+    
+    useEffect(() => {
+      startRound();
+    }, [])
   
+   if (gameOver) {
+    
+    // saveScore function
+
     return (
-      <View style={styles.viewStyle}>
-        <Text style={[styles.fontStyle, styles.headerSize]} >Question {currentQuestion + 1}</Text>
-        <Text style={[styles.fontStyle, styles.headerSize]} >Score: {endlessScore}</Text>
-          <ImageBackground  resizeMode="cover" style={styles.shadowImage}>
-            <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={styles.flagStyle} />
-          </ImageBackground>
-        {currentOptions.map((option, index) => (
-          <Animated.View
-            key={option}
-            style={{
-              ...styles.optionsStyle,
-              ...styles.optionSize,
-              backgroundColor: buttonColor[index],
-              transform: [{ translateY: slideAnim }],
-            }}>
-            <Pressable onPress={() => handleOptionPress(option, index)}>
-              <Text title={option} style={{ ...styles.fontStyle, textAlign: 'center' }}>
-                {option}
-              </Text>
-            </Pressable>
-          </Animated.View>
-        ))}
+      <View>
+        <Text>Game Over!</Text>
+        <Text>Your Score: {endlessScore}</Text>
+        <Pressable title="Replay" onPress={() => restartEndlessChallenge()} style={styles.replayButtonStyle}>
+          <Text>Replay</Text>
+        </Pressable>
       </View>
-    ); 
+    );
+  }
+
+  return (
+    <View style={styles.viewStyle}>
+      <Text style={[styles.fontStyle, styles.headerSize]} >Question {currentQuestion + 1}</Text>
+      <Text style={[styles.fontStyle, styles.headerSize]} >Score: {endlessScore}</Text>
+        <ImageBackground  resizeMode="cover" style={styles.shadowImage}>
+          <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={styles.flagStyle} />
+        </ImageBackground>
+      {currentOptions.map((option, index) => (
+        <Animated.View
+          key={option}
+          style={{
+            ...styles.optionsStyle,
+            ...styles.optionSize,
+            backgroundColor: buttonColor[index],
+            transform: [{ translateY: slideAnim }],
+          }}>
+          <Pressable onPress={() => handleOptionPress(option, index)}>
+            <Text title={option} style={{ ...styles.fontStyle, textAlign: 'center' }}>
+              {option}
+            </Text>
+          </Pressable>
+        </Animated.View>
+      ))}
+    </View>
+  ); 
 }
 
 /* To avoid so much redundant code, Babel and Metro could be configured to read css files and traslate them to JS, so not to have repetitive styling as suggested at
