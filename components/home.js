@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { Alert, View, ScrollView, StyleSheet, Text, Button, Pressable } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker';
 import * as SQLite from 'expo-sqlite';
 import { Ionicons } from '@expo/vector-icons';
 import GuessTheFlagGame from './game';
@@ -21,11 +21,11 @@ export default function Home() {
   useEffect(() => {
     db.transaction(tx => {
       tx.executeSql('create table if not exists countries (id integer primary key not null, name text, flag text, region text);');
-    }, () => console.error("Error when creating DB"), );
-    
+    }, () => console.error("Error when creating DB"),);
+
     db.transaction(tx => {
       tx.executeSql('create table if not exists endless_scores (id integer primary key not null, endless_score integer, time_stamp datetime default current_timestamp);');
-    }, () => console.error("Error when creating DB"), );
+    }, () => console.error("Error when creating DB"),);
 
     console.log('hi im elfo')
     db.transaction(tx => {
@@ -38,16 +38,16 @@ export default function Home() {
             flag: row.flag,
             region: row.region,
           }));
-          
+
           //console.log('Countries from DB:', countriesFromDB); // Log the countries fetched from the database
           setCountriesList(countriesFromDB);
-          
+
         } else {
           console.log('No records found in the database.');
           fetchCountries();
         }
       });
-    }, () => console.error("Error when loading from DB"), )
+    }, () => console.error("Error when loading from DB"),)
     /*
     
     db.transaction(tx => {
@@ -59,39 +59,39 @@ export default function Home() {
   const fetchCountries = () => {
     if (countriesList.length === 0) {
       fetch(API_URL)
-      .then(response => response.json())
-      .then(data => {
+        .then(response => response.json())
+        .then(data => {
           const countries = data.map(country => ({
-              name: country.name,
-              flag: country.flags.png,
-              region: country.region,
-              })
+            name: country.name,
+            flag: country.flags.png,
+            region: country.region,
+          })
           );
 
           setCountriesList(countries);
 
           countries.forEach(country => {
-              db.transaction(tx => {
-                tx.executeSql(
-                  'INSERT OR IGNORE INTO countries (name, flag, region) VALUES (?, ?, ?);',
-                  [country.name, country.flag, country.region],
-                  (_, resultSet) => {
-                    if (resultSet.rowsAffected > 0) {
-                      console.log(`Country "${country.name}" inserted into the database.`);
-                    } else {
-                      console.log(`Country "${country.name}" already exists in the database.`);
-                    }
-                  },
-                  (_, error) => {
-                    console.error(`Error inserting country "${country.name}" into the database:`, error);
+            db.transaction(tx => {
+              tx.executeSql(
+                'INSERT OR IGNORE INTO countries (name, flag, region) VALUES (?, ?, ?);',
+                [country.name, country.flag, country.region],
+                (_, resultSet) => {
+                  if (resultSet.rowsAffected > 0) {
+                    console.log(`Country "${country.name}" inserted into the database.`);
+                  } else {
+                    console.log(`Country "${country.name}" already exists in the database.`);
                   }
-                );
-              });
+                },
+                (_, error) => {
+                  console.error(`Error inserting country "${country.name}" into the database:`, error);
+                }
+              );
+            });
           });
         })
-      .catch(err => {
-        Alert.alert('Error', err.message)
-      });
+        .catch(err => {
+          Alert.alert('Error', err.message)
+        });
 
     }
   }
@@ -105,7 +105,7 @@ export default function Home() {
   function close() {
     pickerRef.current.blur();
   }
-  
+
   const handleStartGame = () => {
     setStartGame(true);
   };
@@ -128,7 +128,7 @@ export default function Home() {
 
   const pickerItems = [...uniqueRegions].map((region, index) => {
     const countriesInRegion = countriesList.filter(country => country.region === region);
-    
+
     // Check to exclude regions such as Polar or Antarctica with less than 15 countries
     if (countriesInRegion.length >= 15) {
       return <Picker.Item key={index} label={region} value={region} />;
@@ -136,7 +136,7 @@ export default function Home() {
       return null;
     }
   });
-  
+
   return (
     <View style={styles.homeViewStyle}>
       {/* Picker rendered only if no game is started */}
@@ -151,16 +151,16 @@ export default function Home() {
                 selectedValue={selectedRegion}
                 onValueChange={(itemValue, itemIndex) =>
                   setSelectedRegion(itemValue)
-              }>
+                }>
                 <Picker.Item label="Choose a continent" value="" />
                 <Picker.Item label="Worldwide" value="Worldwide" />
                 {pickerItems}
               </Picker>
             </View>
-            <Pressable 
+            <Pressable
               onPress={handleStartGame}
               disabled={startGame || selectedRegion === ''}
-              style={(startGame || selectedRegion === '' 
+              style={(startGame || selectedRegion === ''
                 ? styles.pressableDisabledStyle
                 : styles.pressableStyle)}
             >
@@ -175,7 +175,7 @@ export default function Home() {
             </Pressable>
           </View>
         </View>
-        )}
+      )}
       {/* Button disabled if no region is selected */}
       {startGame && (
         <View>
@@ -196,52 +196,52 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-    fontStyle: {
-      fontFamily: 'PlaypenSans',
-      fontSize: 20,
-      color: 'black'
-    },
-    homeViewStyle: {
-      width: '100%',
-      height: '100%',
-      backgroundColor: '#FEDD6E'
-    },
-    practiceView: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#ecf0f1',
-      borderWidth: 3,
-      borderColor: '#3498db',
-      borderRadius: 15,
-      margin: 10,
-      padding: 10,
-    },
-    pickerContainer: {
-      width: '90%',
-      marginTop: 10,
-      borderColor: '#FF6F61',
-      borderWidth: 1,
-      borderRadius: 15
-    },
-    titleStyle: {
-      fontFamily: 'PlaypenSansBold',
-      fontSize: 20,
-      color: 'black'
-    },
-    pressableStyle: {
-      backgroundColor: '#FF6F61',
-      padding: 10,
-      margin: 10,
-      borderRadius: 15,
-      borderColor: 'black',
-      borderWidth: 3
-    },
-    pressableDisabledStyle: {
-      backgroundColor: '#BBB5B5',
-      padding: 10,
-      margin: 10,
-      borderRadius: 15,
-      borderColor: 'black',
-      borderWidth: 3
-    }
-  });
+  fontStyle: {
+    fontFamily: 'PlaypenSans',
+    fontSize: 20,
+    color: 'black'
+  },
+  homeViewStyle: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#FEDD6E'
+  },
+  practiceView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ecf0f1',
+    borderWidth: 3,
+    borderColor: '#3498db',
+    borderRadius: 15,
+    margin: 10,
+    padding: 10,
+  },
+  pickerContainer: {
+    width: '90%',
+    marginTop: 10,
+    borderColor: '#FF6F61',
+    borderWidth: 1,
+    borderRadius: 15
+  },
+  titleStyle: {
+    fontFamily: 'PlaypenSansBold',
+    fontSize: 20,
+    color: 'black'
+  },
+  pressableStyle: {
+    backgroundColor: '#FF6F61',
+    padding: 10,
+    margin: 10,
+    borderRadius: 15,
+    borderColor: 'black',
+    borderWidth: 3
+  },
+  pressableDisabledStyle: {
+    backgroundColor: '#BBB5B5',
+    padding: 10,
+    margin: 10,
+    borderRadius: 15,
+    borderColor: 'black',
+    borderWidth: 3
+  }
+});

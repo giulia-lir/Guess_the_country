@@ -34,7 +34,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
       setCorrectAnswer(randomCountry.name);
 
       setCurrentOptions(options);
-    
+
     }
   }, [currentQuestion, selectedRegion, replayGame]);
 
@@ -71,7 +71,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
         options.push(randomCountry.name.toUpperCase());
       }
     }
-    
+
     // Shuffle the options
     return options.sort(() => Math.random() - 0.5);
   };
@@ -85,9 +85,9 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     } else {
       newButtonColor[index] = '#D90600';
     }
-    
+
     setButtonColor(newButtonColor);
-    
+
     setTimeout(() => {
       slideAnim.setValue(500);
       setCurrentQuestion(currentQuestion + 1);
@@ -125,9 +125,9 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     <View style={styles.viewStyle}>
       <Text style={[styles.fontStyle, styles.headerSize]} >Question {currentQuestion + 1}</Text>
       <Text style={[styles.fontStyle, styles.headerSize]} >Score: {score}</Text>
-        <ImageBackground  resizeMode="cover" style={styles.shadowImage}>
-          <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={styles.flagStyle} />
-        </ImageBackground>
+      <ImageBackground resizeMode="cover" style={styles.shadowImage}>
+        <Image source={{ uri: countries.find(country => country.name === correctAnswer)?.flag }} style={styles.flagStyle} />
+      </ImageBackground>
       {currentOptions.map((option, index) => (
         <Animated.View
           key={option}
@@ -198,6 +198,6 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 20,
     width: '30%',
-    
+
   },
 });

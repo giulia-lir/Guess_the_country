@@ -30,22 +30,22 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator screenOptions={{
-          tabBarStyle: styles.navigatorTabsStyle, // overall style
-          // tabStyle: styles.tabStyle,  specific tab style
-          tabBarLabelStyle: styles.tabFontStyle,
-        }} onLayout={onLayoutRootView}>
-        <Tab.Screen 
-          name="Games" 
-          component={Home} 
+        tabBarStyle: styles.navigatorTabsStyle, // overall style
+        // tabStyle: styles.tabStyle,  specific tab style
+        tabBarLabelStyle: styles.tabFontStyle,
+      }} onLayout={onLayoutRootView}>
+        <Tab.Screen
+          name="Games"
+          component={Home}
           options={{
-              tabBarIcon: () => (
-                <FontAwesome5 name="font-awesome-flag" size={23} color="#3498db" />
-              ),
-            }}
+            tabBarIcon: () => (
+              <FontAwesome5 name="font-awesome-flag" size={23} color="#3498db" />
+            ),
+          }}
         />
-        <Tab.Screen 
-          name="Scoreboards" 
-          component={Scoreboards} 
+        <Tab.Screen
+          name="Scoreboards"
+          component={Scoreboards}
           options={{
             tabBarIcon: () => (
               <FontAwesome name="trophy" size={25} color="#3498db" />
