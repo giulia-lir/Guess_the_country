@@ -89,12 +89,39 @@ export default EndlessQuizChallenge = ({ countries }) => {
     setButtonColor(newButtonColor);
   };
 
-  const saveScore = () => {
+  /* const saveScore = () => {
     db.transaction(tx => {
       tx.executeSql('insert into endless_scores (endless_score) values (?);', [endlessScore]);
     }, (_, error) => {
       console.error("Error during insert:", error);
     },    )
+  } */
+  const saveScore = (currentScore) => {
+    db.transaction(
+      tx => {
+        tx.executeSql('select * from endless_scores;', [], (_, { rows }) => {
+          const scoresArray = rows._array;
+
+          scoresArray.sort((a, b) => b.endless_score - a.endless_score);
+
+          const isTop10 = scoresArray.length < 10 || currentScore > scoresArray[9].endless_score;
+
+          if (isTop10) {
+            if (scoresArray.length > 10) {
+              const excessScores = scoresArray.slice(9);
+              excessScores.forEach(score => {
+                tx.executeSql('delete from endless_scores where id = ?;', [score.id]);
+              });
+            }
+            // Insert the new score into the database
+            tx.executeSql('insert into endless_scores (endless_score) values (?);', [currentScore]);
+          }
+        });
+      },
+      (_, error) => {
+        console.error("Error during insert:", error);
+      }
+    );
   }
 
   useEffect(() => {
@@ -103,8 +130,7 @@ export default EndlessQuizChallenge = ({ countries }) => {
 
   if (gameOver) {
 
-    // saveScore function
-    saveScore();
+    saveScore(endlessScore);
 
     return (
       <View>
