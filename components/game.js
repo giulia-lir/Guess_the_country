@@ -103,7 +103,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     return (
       <View>
         <Text>Game Over!</Text>
-        <Text>Your Score: {score}</Text>
+        <Text>Your Score: {score} / 25</Text>
         <Pressable title="Replay" onPress={() => restartPracticeGame()} style={styles.replayButtonStyle}>
           <Text>Replay</Text>
         </Pressable>
@@ -116,7 +116,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     return (
       <View>
         <Text>Game Over!</Text>
-        <Text>Your Score: {score}</Text>
+        <Text>Your Score: {score} / 15</Text>
         <Pressable title="Replay" onPress={() => restartPracticeGame()} style={styles.replayButtonStyle}>
           <Text>Replay</Text>
         </Pressable>
