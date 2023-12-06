@@ -7,6 +7,7 @@ export default EndlessQuizChallenge = ({ db, countries }) => {
   const [endlessScore, setEndlessScore] = useState(0);
   const [currentOptions, setCurrentOptions] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState('');
+  const [disableOptions, setDisableOptions] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [buttonColor, setButtonColor] = useState(['#ecf0f1', '#ecf0f1', '#ecf0f1', '#ecf0f1']);
   const slideAnim = useRef(new Animated.Value(500)).current;
@@ -26,6 +27,7 @@ export default EndlessQuizChallenge = ({ db, countries }) => {
     setCorrectAnswer(randomCountry.name);
     setCurrentOptions(options);
     optionsAnimationEffect(options);
+    setDisableOptions(false);
   }
 
   const optionsAnimationEffect = (options) => {
@@ -70,6 +72,7 @@ export default EndlessQuizChallenge = ({ db, countries }) => {
     if (selectedCountry === correctAnswer.toUpperCase()) {
       setEndlessScore(endlessScore + 1);
       newButtonColor[index] = '#09B400';
+      setDisableOptions(true);
       setTimeout(() => {
         slideAnim.setValue(500);
         setCurrentQuestion(currentQuestion + 1);
@@ -78,6 +81,7 @@ export default EndlessQuizChallenge = ({ db, countries }) => {
       }, 500);
     } else {
       newButtonColor[index] = '#D90600';
+      setDisableOptions(true);
       setTimeout(() => { setGameOver(true) }, 500)
     }
     setButtonColor(newButtonColor);
@@ -125,7 +129,7 @@ export default EndlessQuizChallenge = ({ db, countries }) => {
             backgroundColor: buttonColor[index],
             transform: [{ translateY: slideAnim }],
           }}>
-          <Pressable onPress={() => handleOptionPress(option, index)}>
+          <Pressable onPress={() => handleOptionPress(option, index)} disabled={disableOptions}>
             <Text title={option} style={{ ...styles.fontStyle, textAlign: 'center' }}>
               {option}
             </Text>

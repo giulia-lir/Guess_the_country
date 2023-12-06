@@ -6,42 +6,39 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [score, setScore] = useState(0);
   const [currentOptions, setCurrentOptions] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState('');
-  const [replayGame, setReplayGame] = useState(false);
+  const [disableOptions, setDisableOptions] = useState(false);
   const [buttonColor, setButtonColor] = useState(['#ecf0f1', '#ecf0f1', '#ecf0f1', '#ecf0f1']);
   const slideAnim = useRef(new Animated.Value(500)).current;
 
-  // Render the question (flag) with answers (4 buttons, 1 correct option)
-  useEffect(() => {
-    if (replayGame) {
-      setScore(0);
-      setCurrentQuestion(0);
-      setReplayGame(false);
-      slideAnim.setValue(500);
-    } else {
-      // Filter countries to be adjusted by region, if worldwide is selected all countries count
-      const filteredCountries = countries.filter(country => {
-        if (selectedRegion === 'Worldwide') {
-          return true; // Include all countries when 'Worldwide' is selected
-        } else {
-          return country.region === selectedRegion;
-        }
-      });
+  const restartPracticeGame = () => {
+    slideAnim.setValue(500);
+    setButtonColor(['#ecf0f1', '#ecf0f1', '#ecf0f1', '#ecf0f1'])
+    setScore(0);
+    setCurrentQuestion(0);
+    startRound();
+  }
 
-      const randomCountry = filteredCountries[Math.floor(Math.random() * filteredCountries.length)]; // Need to check and avoid duplicates
+  const startRound = () => {
+    const filteredCountries = countries.filter(country => {
+      if (selectedRegion === 'Worldwide') {
+        return true; // Include all countries when 'Worldwide' is selected
+      } else {
+        return country.region === selectedRegion;
+      }
+    });
 
-      const options = getRandomOptions(filteredCountries, randomCountry);
+    const randomCountry = filteredCountries[Math.floor(Math.random() * filteredCountries.length)]; // Need to check and avoid duplicates
+    const options = getRandomOptions(filteredCountries, randomCountry);
 
-      setCorrectAnswer(randomCountry.name);
-
-      setCurrentOptions(options);
-
-    }
-  }, [currentQuestion, selectedRegion, replayGame]);
-
-  // Add question transition animation
-  useEffect(() => {
-    if (currentOptions.length > 0) {
-      const animations = currentOptions.map((_, index) => {
+    setCorrectAnswer(randomCountry.name);
+    setCurrentOptions(options);
+    optionsAnimationEffect(options);
+    setDisableOptions(false);
+  }
+  
+  const optionsAnimationEffect = (options) => {
+    if (options.length > 0) {
+      const animations = options.map((_, index) => {
         return Animated.timing(slideAnim, {
           toValue: 0,
           duration: 500,
@@ -49,10 +46,9 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
           useNativeDriver: false,
         });
       });
-
       Animated.sequence(animations).start();
     }
-  }, [currentOptions, slideAnim]);
+  }
 
   const getRandomOptions = (countries, correctCountry) => {
     const options = [correctCountry.name.toUpperCase()];
@@ -82,8 +78,10 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     if (selectedCountry === correctAnswer.toUpperCase()) {
       setScore(score + 1);
       newButtonColor[index] = '#09B400';
+      setDisableOptions(true);
     } else {
       newButtonColor[index] = '#D90600';
+      setDisableOptions(true);
     }
 
     setButtonColor(newButtonColor);
@@ -92,8 +90,13 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
       slideAnim.setValue(500);
       setCurrentQuestion(currentQuestion + 1);
       setButtonColor(['#ecf0f1', '#ecf0f1', '#ecf0f1', '#ecf0f1'])
+      startRound();
     }, 500);
   };
+
+  useEffect(() => {
+    startRound();
+  }, [])
 
   // Fixed 25 flag questions for the Worldwide mode
   if (selectedRegion == 'Worldwide' && currentQuestion >= 25) {
@@ -101,7 +104,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
       <View>
         <Text>Game Over!</Text>
         <Text>Your Score: {score}</Text>
-        <Pressable title="Replay" onPress={() => setReplayGame(true)} style={styles.replayButtonStyle}>
+        <Pressable title="Replay" onPress={() => restartPracticeGame()} style={styles.replayButtonStyle}>
           <Text>Replay</Text>
         </Pressable>
       </View>
@@ -114,7 +117,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
       <View>
         <Text>Game Over!</Text>
         <Text>Your Score: {score}</Text>
-        <Pressable title="Replay" onPress={() => setReplayGame(true)} style={styles.replayButtonStyle}>
+        <Pressable title="Replay" onPress={() => restartPracticeGame()} style={styles.replayButtonStyle}>
           <Text>Replay</Text>
         </Pressable>
       </View>
@@ -137,7 +140,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
             backgroundColor: buttonColor[index],
             transform: [{ translateY: slideAnim }],
           }}>
-          <Pressable onPress={() => handleOptionPress(option, index)}>
+          <Pressable onPress={() => handleOptionPress(option, index)} disabled={disableOptions}>
             <Text title={option} style={{ ...styles.fontStyle, textAlign: 'center' }}>
               {option}
             </Text>
