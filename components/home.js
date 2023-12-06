@@ -24,7 +24,7 @@ export default function Home() {
     }, () => console.error("Error when creating DB"),);
 
     db.transaction(tx => {
-      tx.executeSql('create table if not exists endless_scores (id integer primary key not null, endless_score integer, time_stamp datetime default current_timestamp);');
+      tx.executeSql('create table if not exists endless_scores (id integer primary key not null, endless_score integer);');
     }, () => console.error("Error when creating DB"),);
 
     console.log('hi im elfo')
