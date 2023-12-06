@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { Animated, ImageBackground, View, Text, Pressable, Image, StyleSheet } from 'react-native';
 
-export default EndlessQuizChallenge = ({ db, countries }) => {
+const db = SQLite.openDatabase('countriesdb.db');
+
+export default EndlessQuizChallenge = ({ countries }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [endlessScore, setEndlessScore] = useState(0);
   const [currentOptions, setCurrentOptions] = useState([]);
@@ -89,9 +91,10 @@ export default EndlessQuizChallenge = ({ db, countries }) => {
 
   const saveScore = () => {
     db.transaction(tx => {
-      tx.executeSql('insert into endless_scores (score) values (?);', endlessScore);
-    }, null, updateList
-    )
+      tx.executeSql('insert into endless_scores (endless_score) values (?);', [endlessScore]);
+    }, (_, error) => {
+      console.error("Error during insert:", error);
+    },    )
   }
 
   useEffect(() => {
@@ -101,6 +104,7 @@ export default EndlessQuizChallenge = ({ db, countries }) => {
   if (gameOver) {
 
     // saveScore function
+    saveScore();
 
     return (
       <View>
