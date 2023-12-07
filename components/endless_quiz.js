@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as SQLite from 'expo-sqlite';
 import { Animated, ImageBackground, View, Text, Pressable, Image, StyleSheet } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const db = SQLite.openDatabase('countriesdb.db');
 
@@ -137,7 +138,8 @@ export default EndlessQuizChallenge = ({ countries }) => {
         <Text>Game Over!</Text>
         <Text>Your Score: {endlessScore}</Text>
         <Pressable title="Replay" onPress={() => restartEndlessChallenge()} style={styles.replayButtonStyle}>
-          <Text>Replay</Text>
+          <MaterialIcons name="replay" size={24} color="black" />
+          <Text style={styles.replayFontStyle}>REPLAY</Text>
         </Pressable>
       </View>
     );
@@ -220,12 +222,24 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderLeftWidth: 1,
   },
+  replayFontStyle: {
+    fontSize: 10,
+  },
   replayButtonStyle: {
-    backgroundColor: '#3498db',
-    borderRadius: 15,
+    backgroundColor: '#ecf0f1',
     padding: 10,
-    margin: 20,
-    width: '30%',
-
+    width: 70,
+    height: 'auto',
+    marginTop: 20,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#9B5600',
+    borderTopWidth: 1,
+    borderRightWidth: 5,
+    borderLeftWidth: 1,
+    borderBottomWidth: 5,
+    bottom: 0,
+    alignSelf: 'center',
   },
 });

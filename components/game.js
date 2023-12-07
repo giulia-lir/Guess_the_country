@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Animated, ImageBackground, View, Text, Pressable, Image, StyleSheet } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -105,7 +106,8 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
         <Text>Game Over!</Text>
         <Text>Your Score: {score} / 25</Text>
         <Pressable title="Replay" onPress={() => restartPracticeGame()} style={styles.replayButtonStyle}>
-          <Text>Replay</Text>
+          <MaterialIcons name="replay" size={24} color="black" />
+          <Text style={styles.replayFontStyle}>REPLAY</Text>
         </Pressable>
       </View>
     );
@@ -118,7 +120,8 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
         <Text>Game Over!</Text>
         <Text>Your Score: {score} / 15</Text>
         <Pressable title="Replay" onPress={() => restartPracticeGame()} style={styles.replayButtonStyle}>
-          <Text>Replay</Text>
+          <MaterialIcons name="replay" size={24} color="black" />
+          <Text style={styles.replayFontStyle}>REPLAY</Text>
         </Pressable>
       </View>
     );
@@ -164,6 +167,9 @@ const styles = StyleSheet.create({
   headerSize: {
     fontSize: 20
   },
+  replayFontStyle: {
+    fontSize: 10,
+  },
   optionSize: {
     fontSize: 15,
   },
@@ -199,11 +205,20 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
   },
   replayButtonStyle: {
-    backgroundColor: '#3498db',
-    borderRadius: 15,
+    backgroundColor: '#ecf0f1',
     padding: 10,
-    margin: 20,
-    width: '30%',
-
+    width: 70,
+    height: 'auto',
+    marginTop: 20,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#9B5600',
+    borderTopWidth: 1,
+    borderRightWidth: 5,
+    borderLeftWidth: 1,
+    borderBottomWidth: 5,
+    bottom: 0,
+    alignSelf: 'center',
   },
 });

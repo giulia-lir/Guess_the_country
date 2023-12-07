@@ -4,6 +4,7 @@ import { Alert, View, ScrollView, StyleSheet, Text, Button, Pressable } from 're
 import { Picker } from '@react-native-picker/picker';
 import * as SQLite from 'expo-sqlite';
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import GuessTheFlagGame from './game';
 import EndlessQuizChallenge from './endless_quiz';
@@ -138,17 +139,20 @@ export default function Home() {
     }
   });
 
+  // Sunset feel: ['#03503B','#025362','#03C5BE','#FF8C00', '#FF5733', '#FF414D', '#D32F2F','#025362']
+  // Sunny beach view: ['#87CEEB', '#00BFFF', '#FFD700', '#FF6347', '#CD5C5C']
+  // Beach colors: ['#FFE4C4', '#D2B48C', '#87CEEB', '#556B2F']
   return (
     <LinearGradient
-      colors={['#03503B','#025362','#03C5BE','#FF8C00', '#FF5733', '#FF414D', '#D32F2F','#025362']}
+      colors={['#FF8C00', '#FFD700', '#FFE4C4', '#D2B48C', '#87CEEB', '#556B2F']}
       start={{ x: 0, y: 1 }}     // Adjust start and end values
       end={{ x: 0, y: 0 }}
       style={styles.homeViewStyle}>
       {/* Picker rendered only if no game is started */}
       {!startGame && !startEndlessQuiz && (
         <View>
-          <View style={styles.practiceView}>
-            <Text style={styles.titleStyle}>PRACTICE</Text>
+          <View style={styles.gameSelectionView}>
+            <Text style={styles.titleStyle}>TRAINING ZONE</Text>
             <Text style={styles.fontStyle}>Practice your flags knowledge with this easy game. 25 questions for Worldwide type, 15 questions for any selected continent.</Text>
             <View style={styles.pickerContainer}>
               <Picker
@@ -172,7 +176,7 @@ export default function Home() {
               <Text style={styles.titleStyle}><Ionicons name="play" size={24} color="black" /> Start Guessing</Text>
             </Pressable>
           </View>
-          <View style={styles.practiceView}>
+          <View style={styles.gameSelectionView}>
             <Text style={styles.titleStyle}>ENDLESS CHALLENGE</Text>
             <Text style={styles.fontStyle}>Challenge yourself in this game. Questions keep coming as long as you guess them correctly and rack up points! Scores can be featured in the global leaderboards.</Text>
             <Pressable title="Start Endless Quiz" onPress={handleStartEndlessQuiz} style={styles.pressableStyle}>
@@ -183,18 +187,23 @@ export default function Home() {
       )}
       {/* Button disabled if no region is selected */}
       {startGame && (
-        <View>
+        <ScrollView>
           <GuessTheFlagGame countries={countriesList} selectedRegion={selectedRegion} />
           {/* Display quit button if game is in progress */}
-          <Button title="Quit" onPress={handleQuitGame} />
-        </View>
+          <Pressable onPress={handleQuitGame} style={styles.quitPressableStyle}>
+            <FontAwesome5 name="stop" size={24} color="red" /><Text style={styles.quitFontStyle}>QUIT</Text>
+          </Pressable>
+        </ScrollView>
       )}
       {startEndlessQuiz && (
-        <View>
+        <ScrollView>
           <EndlessQuizChallenge countries={countriesList} />
           {/* Display quit button if game is in progress */}
-          <Button title="Quit" onPress={handleQuitEndlessQuiz} />
-        </View>
+          {/* <Button title="Quit" onPress={handleQuitEndlessQuiz} /> */}
+          <Pressable onPress={handleQuitEndlessQuiz} style={styles.quitPressableStyle}>
+            <FontAwesome5 name="stop" size={24} color="red" /><Text style={styles.quitFontStyle}>QUIT</Text>
+          </Pressable>
+        </ScrollView>
       )}
     </LinearGradient>
   );
@@ -206,17 +215,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'black'
   },
+  quitFontStyle: {
+    fontSize: 10,
+  },
   homeViewStyle: {
     width: '100%',
     height: '100%',
     backgroundColor: '#FEDD6E'
   },
-  practiceView: {
+  gameSelectionView: {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ecf0f1',
-    borderWidth: 3,
-    borderColor: '#3498db',
+    borderTopWidth: 1,
+    borderBottomWidth: 5,
+    borderRightWidth: 5,
+    borderLeftWidth: 1,
+    borderColor: 'grey',
     borderRadius: 15,
     margin: 10,
     padding: 10,
@@ -224,7 +239,7 @@ const styles = StyleSheet.create({
   pickerContainer: {
     width: '90%',
     marginTop: 10,
-    borderColor: '#FF6F61',
+    borderColor: '#3498db',
     borderWidth: 1,
     borderRadius: 15
   },
@@ -234,12 +249,15 @@ const styles = StyleSheet.create({
     color: 'black'
   },
   pressableStyle: {
-    backgroundColor: '#FF6F61',
+    backgroundColor: '#ecf0f1',
     padding: 10,
     margin: 10,
     borderRadius: 15,
-    borderColor: 'black',
-    borderWidth: 3
+    borderColor: '#3498db',
+    borderTopWidth: 1,
+    borderBottomWidth: 5,
+    borderRightWidth: 5,
+    borderLeftWidth: 1,
   },
   pressableDisabledStyle: {
     backgroundColor: '#BBB5B5',
@@ -247,6 +265,26 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 15,
     borderColor: 'black',
-    borderWidth: 3
+    borderTopWidth: 1,
+    borderBottomWidth: 5,
+    borderRightWidth: 5,
+    borderLeftWidth: 1,
+  },
+  quitPressableStyle: {
+    backgroundColor: '#ecf0f1',
+    padding: 10,
+    width: 70,
+    height: 'auto',
+    marginTop: 20,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#9B5600',
+    borderTopWidth: 1,
+    borderRightWidth: 5,
+    borderLeftWidth: 1,
+    borderBottomWidth: 5,
+    bottom: 0,
+    alignSelf: 'center',
   }
 });
