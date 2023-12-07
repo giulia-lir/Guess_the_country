@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
-
+import { LinearGradient } from 'expo-linear-gradient';
 
 const db = SQLite.openDatabase('countriesdb.db');
 
@@ -37,7 +37,12 @@ export default function Scoreboards({ navigation }) {
     );
 
     return (
-        <View style={styles.viewStyle}>
+        <LinearGradient
+            colors={['#6200EA', '#4A148C', '#1565C0', '#00C853', '#FFD600', '#FF6D00', '#D500F9']}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.viewStyle}
+        >
             <Text style={styles.titleStyle}>Your best scores</Text>
             {/* <Button title="Show List" onPress={getScoreList} /> */}
             {scoreList.length > 0 ? (
@@ -58,14 +63,14 @@ export default function Scoreboards({ navigation }) {
             ) : (
                 <Text>No scores saved</Text>
             )}
-        </View>
+        </LinearGradient>
     );
 }
 
 const styles = StyleSheet.create({
     viewStyle: {
         alignItems: 'center',
-        backgroundColor: 'red',
+        backgroundColor: '#3498db',
         height: '100%',
     },
     titleStyle: {
@@ -84,7 +89,7 @@ const styles = StyleSheet.create({
     itemStyle: {
         width: '100%',
         backgroundColor: 'white',
-        borderColor: 'grey',
+        borderColor: '#05395B',
         borderRadius: 15,
         borderBottomWidth: 3,
         borderTopWidth: 0,
