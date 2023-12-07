@@ -43,8 +43,9 @@ export default function Scoreboards({ navigation }) {
             {scoreList.length > 0 ? (
                 <FlatList
                     keyExtractor={item => item.id.toString()}
-                    renderItem={({ item }) =>
+                    renderItem={({ item, index }) =>
                         <View style={styles.itemStyle}>
+                            <Text>{index + 1}:</Text>
                             <Text>Test</Text>
                             <Text style={styles.fontStyleBold}>{item.endless_score}</Text>
                             {/* <Text style={{ color: '#0000ff' }} onPress={() => deleteScore(item.id)}>Delete</Text> */}
@@ -52,6 +53,7 @@ export default function Scoreboards({ navigation }) {
                     }
                     data={scoreList}
                     showsVerticalScrollIndicator={true}
+                    style={styles.flatListStyle}
                 />
             ) : (
                 <Text>No scores saved</Text>
@@ -63,7 +65,8 @@ export default function Scoreboards({ navigation }) {
 const styles = StyleSheet.create({
     viewStyle: {
         alignItems: 'center',
-        backgroundColor: 'red'
+        backgroundColor: 'red',
+        height: '100%',
     },
     titleStyle: {
         fontFamily: 'PlaypenSansBold',
@@ -75,14 +78,18 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: 'black'
     },
+    flatListStyle: {
+        width: '90%',
+    },
     itemStyle: {
         width: '100%',
         backgroundColor: 'white',
-        borderBottomColor: 'grey',
-        borderWidth: 2,
+        borderColor: 'grey',
+        borderRadius: 15,
+        borderBottomWidth: 3,
         borderTopWidth: 0,
         borderLeftWidth: 0,
-        borderRightWidth: 0,
+        borderRightWidth: 3,
         paddingVertical: 10,
         flexDirection: 'row',
         justifyContent: 'space-evenly',
