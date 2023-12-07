@@ -4,6 +4,7 @@ import { Alert, View, ScrollView, StyleSheet, Text, Button, Pressable } from 're
 import { Picker } from '@react-native-picker/picker';
 import * as SQLite from 'expo-sqlite';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import GuessTheFlagGame from './game';
 import EndlessQuizChallenge from './endless_quiz';
 
@@ -138,7 +139,11 @@ export default function Home() {
   });
 
   return (
-    <View style={styles.homeViewStyle}>
+    <LinearGradient
+      colors={['#03503B','#025362','#03C5BE','#FF8C00', '#FF5733', '#FF414D', '#D32F2F','#025362']}
+      start={{ x: 0, y: 1 }}     // Adjust start and end values
+      end={{ x: 0, y: 0 }}
+      style={styles.homeViewStyle}>
       {/* Picker rendered only if no game is started */}
       {!startGame && !startEndlessQuiz && (
         <View>
@@ -191,7 +196,7 @@ export default function Home() {
           <Button title="Quit" onPress={handleQuitEndlessQuiz} />
         </View>
       )}
-    </View>
+    </LinearGradient>
   );
 }
 
