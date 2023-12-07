@@ -35,7 +35,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
     optionsAnimationEffect(options);
     setDisableOptions(false);
   }
-  
+
   const optionsAnimationEffect = (options) => {
     if (options.length > 0) {
       const animations = options.map((_, index) => {
@@ -174,26 +174,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#BE9A22',
     borderRadius: 15,
     position: 'relative',
-    margin: 10
+    margin: 10,
+    paddingRight: 5,
   },
   flagStyle: {
     width: '99%',
     height: 200,
     objectFit: 'contain', // Render image maintaining aspect ratio for flags
-    borderWidth: 3,
+    borderWidth: 1,
     borderColor: 'black',
     borderRadius: 15,
     zIndex: 2,
-    marginLeft: -10,
-    marginTop: -10
+    marginTop: -8,
   },
   optionsStyle: {
     width: '70%',
     margin: 15,
     padding: 10,
     borderRadius: 15,
-    borderColor: '#3498db',
-    borderWidth: 3,
+    borderColor: '#BE9A22',
+    borderBottomWidth: 5,
+    borderRightWidth: 5,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
   },
   replayButtonStyle: {
     backgroundColor: '#3498db',
