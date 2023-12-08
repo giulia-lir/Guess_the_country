@@ -23,11 +23,15 @@ export default function Home() {
   useEffect(() => {
     db.transaction(tx => {
       tx.executeSql('create table if not exists countries (id integer primary key not null, name text, flag text, region text);');
-    }, () => console.error("Error when creating DB"),);
+    }, () => console.error("Error when creating countries table"),);
 
     db.transaction(tx => {
       tx.executeSql('create table if not exists endless_scores (id integer primary key not null, endless_score integer);');
-    }, () => console.error("Error when creating DB"),);
+    }, () => console.error("Error when creating endless_score table"),);
+
+    db.transaction(tx => {
+      tx.executeSql('create table if not exists player_info (id integer primary key not null, nickname text);');
+    }, () => console.error("Error when creating player_info table"),);
 
     console.log('hi im elfo')
     db.transaction(tx => {

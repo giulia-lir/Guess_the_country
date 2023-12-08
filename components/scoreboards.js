@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Button, TextInput, Alert } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -26,11 +26,11 @@ const firedb = getDatabase(app);
 
 export default function Scoreboards({ navigation }) {
     const [scoreList, setScoreList] = useState([]);
-    //const [highestScore, setHighestScore] = useState(0);
-    //const [leaderBoard, setLeaderBoard] = useState([]);
+    const [currentNickName, setCurrentNickname] = useState('');
+    const [newNickName, setNewNickname] = useState('');
+    const [isNicknameSaved, setIsNicknameSaved] = useState(false);
 
     const getScoreList = () => {
-
         db.transaction(tx => {
             tx.executeSql('select * from endless_scores;', [], (_, { rows }) => {
                 results = rows._array
@@ -41,6 +41,59 @@ export default function Scoreboards({ navigation }) {
             }
             ), (_, error) => console.error('Error fetching scores:', error)
         });
+    }
+
+    const getNickname = () => {
+        db.transaction(tx => {
+            tx.executeSql('select nickname from player_info where id = ?;', [1], (_, { rows }) => {
+                const playerInfo = rows._array[0];
+                setCurrentNickname(playerInfo ? playerInfo.nickname : '');
+                setNewNickname(playerInfo ? playerInfo.nickname : '');
+                setIsNicknameSaved(playerInfo ? true : false);
+                //console.log(rows._array)
+            }, (_, error) => {
+                console.error('Error fetching nickname:', error);
+            });
+        });
+    };
+
+    const saveNickname = () => {
+        if (newNickName != currentNickName && newNickName.trim() != "") {
+            db.transaction(
+                tx => {
+                    tx.executeSql('SELECT nickname FROM player_info WHERE id = ?;', [1], (_, { rows }) => {
+                        if (rows.length > 0) {
+                            tx.executeSql('UPDATE player_info SET nickname = ? WHERE id = ?;', [newNickName, 1]);
+                            setCurrentNickname(newNickName)
+                        } else {
+                            tx.executeSql('INSERT INTO player_info (nickname) VALUES (?);', [newNickName]);
+                            setCurrentNickname(newNickName)
+                        }
+                    },
+                        (_, error) => console.error('Error saving nickname:', error),
+                        getNickname)
+                    setIsNicknameSaved(true)
+                },
+            );
+        }
+    };
+
+    const cancelEdit = () => {
+        setNewNickname(currentNickName);
+        setIsNicknameSaved(true);
+    };
+
+    const openEditField = () => {
+        setIsNicknameSaved(false);
+    };
+
+    const deleteNicknameTable = () => {
+        console.log("Delete the damn table")
+        db.transaction(
+            tx => {
+                tx.executeSql('drop table if exists player_info;');
+            }, (_, error) => console.error('Error deleting player_info table:', error)
+        )
     }
 
     const deleteScore = (id) => {
@@ -58,6 +111,7 @@ export default function Scoreboards({ navigation }) {
     useFocusEffect(
         React.useCallback(() => {
             getScoreList();
+            getNickname();
         }, [])
     );
 
@@ -68,7 +122,27 @@ export default function Scoreboards({ navigation }) {
             end={{ x: 1, y: 0 }}
             style={styles.viewStyle}
         >
-            <Button title= "Save to Leaderboard" onPress={saveScore}/>
+            {!isNicknameSaved ? (
+                <View style={styles.inputContainer}>
+                    <Text style={styles.titleStyle}>Enter your nickname:</Text>
+                    <TextInput
+                        style={styles.inputStyle}
+                        value={newNickName}
+                        onChangeText={(text) => setNewNickname(text)}
+                        placeholder="Nickname"
+                        maxLength={20}
+                    />
+                    <Button title="Save Nickname" onPress={saveNickname} />
+                    <Button title="Cancel" onPress={cancelEdit} />
+                </View>
+            ) : (
+                <View style={styles.editButtonContainer}>
+                    <Text style={styles.welcomeText}>Hello {newNickName}!</Text>
+                    <Button title="Edit" onPress={openEditField} />
+                    <Button title="Delete table" onPress={deleteNicknameTable} />
+                </View>
+            )}
+            <Button title="Save to Leaderboard" onPress={saveScore} />
             <Text style={styles.titleStyle}>Your best scores</Text>
             {/* <Button title="Show List" onPress={getScoreList} /> */}
             {scoreList.length > 0 ? (
@@ -77,7 +151,7 @@ export default function Scoreboards({ navigation }) {
                     renderItem={({ item, index }) =>
                         <View style={styles.itemStyle}>
                             <Text>{index + 1}:</Text>
-                            <Text>Test</Text>
+                            <Text>{currentNickName}</Text>
                             <Text style={styles.fontStyleBold}>{item.endless_score}</Text>
                             {/* <Text style={{ color: '#0000ff' }} onPress={() => deleteScore(item.id)}>Delete</Text> */}
                         </View>
@@ -98,6 +172,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#3498db',
         height: '100%',
+    },
+    welcomeText: {
+        fontFamily: 'PlaypenSansBold',
+        fontSize: 24,
+        color: 'black',
+        marginVertical: 20,
     },
     titleStyle: {
         fontFamily: 'PlaypenSansBold',
@@ -126,5 +206,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         alignItems: 'center'
+    },
+    inputContainer: {
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    inputStyle: {
+        height: 40,
+        width: '80%',
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginVertical: 10,
+        paddingHorizontal: 10,
     },
 });
