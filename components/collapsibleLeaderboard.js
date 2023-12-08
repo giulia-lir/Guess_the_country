@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, FlatList, StyleSheet } from 'react-native';
 
-export default function LeaderboardCollapsibleFlatList() {
-    const [isCollapsed, setCollapsed] = useState(false);
-
-    const togglePersonalCollapsible = () => {
-        setCollapsed(!isCollapsed);
-    };
-
+export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollapsible }) {
+    
     return (
         <View style={styles.flatListContainer}>
             <Pressable
-                onPress={togglePersonalCollapsible}
+                onPress={() => openCollapsible()}
                 style={({ pressed }) => [
-                    styles.pressablePersonalScoreStyle,
-                    pressed && styles.pressablePressedStyle,
+                  styles.pressablePersonalScoreStyle,
+                  pressed && styles.pressablePressedStyle,
                 ]}>
                 <Text style={styles.titleStyle}>See Leaderboard</Text>
             </Pressable>

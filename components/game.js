@@ -102,9 +102,9 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   // Fixed 25 flag questions for the Worldwide mode
   if (selectedRegion == 'Worldwide' && currentQuestion >= 25) {
     return (
-      <View>
-        <Text>Game Over!</Text>
-        <Text>Your Score: {score} / 25</Text>
+      <View style={styles.gameOverStyle}>
+        <Text style={[styles.fontStyle, styles.headerSize]}>Game Over!</Text>
+        <Text style={[styles.fontStyle, styles.headerSize]}>Your Score: {score} / 25</Text>
         <Pressable title="Replay" onPress={() => restartPracticeGame()} style={styles.replayButtonStyle}>
           <MaterialIcons name="replay" size={24} color="black" />
           <Text style={styles.replayFontStyle}>REPLAY</Text>
@@ -116,9 +116,9 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   // Fixed 15 flag questions for a selected continent
   if (selectedRegion != 'Worldwide' && currentQuestion >= 15) {
     return (
-      <View>
-        <Text>Game Over!</Text>
-        <Text>Your Score: {score} / 15</Text>
+      <View style={styles.gameOverStyle}>
+        <Text style={[styles.fontStyle, styles.headerSize]}>Game Over!</Text>
+        <Text style={[styles.fontStyle, styles.headerSize]}>Your Score: {score} / 15</Text>
         <Pressable title="Replay" onPress={() => restartPracticeGame()} style={styles.replayButtonStyle}>
           <MaterialIcons name="replay" size={24} color="black" />
           <Text style={styles.replayFontStyle}>REPLAY</Text>
@@ -169,6 +169,16 @@ const styles = StyleSheet.create({
   },
   replayFontStyle: {
     fontSize: 10,
+  },
+  gameOverStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(190, 154, 34, 0.6)',
+    padding: 20,
+    marginTop: 50,
+    marginLeft: 20,
+    marginRight: 20,
+    borderRadius: 15,
   },
   optionSize: {
     fontSize: 15,

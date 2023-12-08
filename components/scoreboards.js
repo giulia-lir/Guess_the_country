@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Button, TextInput } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Button, TextInput } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { initializeApp } from "firebase/app";
 import { getDatabase, push, ref, onValue } from 'firebase/database';
+import withCollapsibleState from './collapsibleHighFunction';
 import PersonalCollapsibleFlatList from './collapsiblePersonalScoreList';
 import LeaderboardCollapsibleFlatList from './collapsibleLeaderboard';
 
@@ -31,6 +32,9 @@ export default function Scoreboards({ navigation }) {
     const [currentNickName, setCurrentNickname] = useState('');
     const [newNickName, setNewNickname] = useState('');
     const [isNicknameSaved, setIsNicknameSaved] = useState(false);
+
+    const PersonalCollapsibleWithState = withCollapsibleState(PersonalCollapsibleFlatList);
+    const LeaderboardCollapsibleWithState = withCollapsibleState(LeaderboardCollapsibleFlatList);
 
     const getScoreList = () => {
         db.transaction(tx => {
@@ -134,11 +138,13 @@ export default function Scoreboards({ navigation }) {
                 </View>
             )}
             {/* <Button title="Save to Leaderboard" onPress={saveScore} /> */}
-            <PersonalCollapsibleFlatList
-                scoreList={scoreList}
-                currentNickName={currentNickName}
-            />
-            <LeaderboardCollapsibleFlatList />
+            <ScrollView>
+                <PersonalCollapsibleWithState
+                    scoreList={scoreList}
+                    currentNickName={currentNickName}
+                />
+                <LeaderboardCollapsibleWithState />
+            </ScrollView>
         </LinearGradient>
     );
 }
@@ -148,6 +154,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#3498db',
         flex: 1,
+        justifyContent: 'center'
     },
     inputContainer: {
         alignItems: 'center',

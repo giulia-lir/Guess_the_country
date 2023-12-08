@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Pressable, FlatList, StyleSheet, ScrollView } from 'react-native';
 
-export default function PersonalCollapsibleFlatList({ scoreList, currentNickName }) {
-    const [isCollapsed, setCollapsed] = useState(false);
-
-    const togglePersonalCollapsible = () => {
-        setCollapsed(!isCollapsed);
-    };
+export default function PersonalCollapsibleFlatList({ isCollapsed, openCollapsible, scoreList, currentNickName }) {
 
     /* const deleteScore = (id) => {
         db.transaction(
@@ -16,10 +11,25 @@ export default function PersonalCollapsibleFlatList({ scoreList, currentNickName
         )
     } */
 
+    // <FlatList
+    //     keyExtractor={item => item.id.toString()}
+    //     renderItem={({ item, index }) => (
+    //         <View style={styles.itemStyle}>
+    //             <Text>{index + 1}:</Text>
+    //             <Text>{currentNickName}</Text>
+    //             <Text style={styles.fontStyleBold}>{item.endless_score}</Text>
+    //             {/* <Text style={{ color: '#0000ff' }} onPress={() => deleteScore(item.id)}>Delete</Text> */}
+    //         </View>
+    //     )}
+    //     data={scoreList}
+    //     showsVerticalScrollIndicator={true}
+    //     style={styles.flatListStyle}
+    // />
+
     return (
         <View style={styles.flatListContainer}>
             <Pressable
-                onPress={togglePersonalCollapsible}
+                onPress={openCollapsible}
                 style={({ pressed }) => [
                     styles.pressablePersonalScoreStyle,
                     pressed && styles.pressablePressedStyle,
@@ -30,26 +40,23 @@ export default function PersonalCollapsibleFlatList({ scoreList, currentNickName
             {isCollapsed && (
                 <View style={{ flex: 1 }}>
                     {scoreList.length > 0 ? (
-                        <FlatList
-                            keyExtractor={item => item.id.toString()}
-                            renderItem={({ item, index }) => (
-                                <View style={styles.itemStyle}>
+                        <ScrollView style={styles.flatListStyle}>
+                            {scoreList.map((item, index) => (
+                                <View key={item.id} style={styles.itemStyle}>
                                     <Text>{index + 1}:</Text>
                                     <Text>{currentNickName}</Text>
                                     <Text style={styles.fontStyleBold}>{item.endless_score}</Text>
                                     {/* <Text style={{ color: '#0000ff' }} onPress={() => deleteScore(item.id)}>Delete</Text> */}
                                 </View>
-                            )}
-                            data={scoreList}
-                            showsVerticalScrollIndicator={true}
-                            style={styles.flatListStyle}
-                        />
+                            ))}
+                        </ScrollView>
                     ) : (
                         <Text>No scores saved</Text>
                     )}
                 </View>
-            )}
-        </View>
+            )
+            }
+        </View >
     );
 };
 const styles = StyleSheet.create({
@@ -78,6 +85,9 @@ const styles = StyleSheet.create({
         fontFamily: 'PlaypenSansBold',
         fontSize: 30,
         color: 'black',
+    },
+    collapsibleContent: {
+        width: '100%',
     },
     itemStyle: {
         width: '100%',
