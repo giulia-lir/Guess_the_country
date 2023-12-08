@@ -18,7 +18,12 @@ export default function PersonalCollapsibleFlatList({ scoreList, currentNickName
 
     return (
         <View style={styles.flatListContainer}>
-            <Pressable onPress={togglePersonalCollapsible}>
+            <Pressable
+                onPress={togglePersonalCollapsible}
+                style={({ pressed }) => [
+                    styles.pressablePersonalScoreStyle,
+                    pressed && styles.pressablePressedStyle,
+                ]}>
                 <Text style={styles.titleStyle}>See your best scores</Text>
             </Pressable>
 
@@ -54,6 +59,21 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         alignItems: 'center',
     },
+    pressablePersonalScoreStyle: {
+        width: '100%',
+        backgroundColor: 'white',
+        borderColor: '#05395B',
+        borderRadius: 15,
+        borderBottomWidth: 5,
+        borderTopWidth: 0,
+        borderLeftWidth: 0,
+        borderRightWidth: 5,
+        padding: 10,
+        margin: 10,
+    },
+    pressablePressedStyle: {
+        backgroundColor: '#BBB5B5',
+    },
     titleStyle: {
         fontFamily: 'PlaypenSansBold',
         fontSize: 30,
@@ -80,6 +100,6 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     flatListStyle: {
-        width: '90%',
+        width: '80%',
     },
 });
