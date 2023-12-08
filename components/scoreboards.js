@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { initializeApp } from "firebase/app";
 import { getDatabase, push, ref, onValue } from 'firebase/database';
 import PersonalCollapsibleFlatList from './collapsiblePersonalScoreList';
+import LeaderboardCollapsibleFlatList from './collapsibleLeaderboard';
 
 // SQLite local DB
 const db = SQLite.openDatabase('countriesdb.db');
@@ -129,11 +130,15 @@ export default function Scoreboards({ navigation }) {
                 <View style={styles.editButtonContainer}>
                     <Text style={styles.welcomeText}>Hello {newNickName}!</Text>
                     <Button title="Edit" onPress={openEditField} />
-                    <Button title="Delete table" onPress={deleteNicknameTable} />
+                    {/* <Button title="Delete table" onPress={deleteNicknameTable} /> */}
                 </View>
             )}
-            <Button title="Save to Leaderboard" onPress={saveScore} />
-            <PersonalCollapsibleFlatList scoreList={scoreList} currentNickName={currentNickName} />
+            {/* <Button title="Save to Leaderboard" onPress={saveScore} /> */}
+            <PersonalCollapsibleFlatList
+                scoreList={scoreList}
+                currentNickName={currentNickName}
+            />
+            <LeaderboardCollapsibleFlatList />
         </LinearGradient>
     );
 }
@@ -142,7 +147,7 @@ const styles = StyleSheet.create({
     viewStyle: {
         alignItems: 'center',
         backgroundColor: '#3498db',
-        height: '100%',
+        flex: 1,
     },
     inputContainer: {
         alignItems: 'center',
