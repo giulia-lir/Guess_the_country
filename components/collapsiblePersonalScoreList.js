@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Pressable, FlatList, StyleSheet } from 'react-native';
 
 export default function PersonalCollapsibleFlatList({ scoreList, currentNickName }) {
-    const [isCollapsed, setCollapsed] = useState(true);
+    const [isCollapsed, setCollapsed] = useState(false);
 
     const togglePersonalCollapsible = () => {
         setCollapsed(!isCollapsed);
