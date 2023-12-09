@@ -84,16 +84,18 @@ export default function Scoreboards({ navigation }) {
                 db={db}
                 currentNickName={currentNickName}
                 setCurrentNickname={setCurrentNickname}
-                 />
+            />
             {/* <Button title="Save to Leaderboard" onPress={saveScore} /> */}
             <ScrollView>
                 <PersonalCollapsibleWithState
                     scoreList={scoreList}
                     currentNickName={currentNickName}
                 />
-                <LeaderboardCollapsibleWithState 
-                app={app}
-                auth={auth} />
+                <LeaderboardCollapsibleWithState
+                    app={app}
+                    auth={auth}
+                    firedb={firedb}
+                />
             </ScrollView>
         </LinearGradient>
     );

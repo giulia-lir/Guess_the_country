@@ -11,22 +11,6 @@ export default function PersonalCollapsibleFlatList({ isCollapsed, openCollapsib
         )
     } */
 
-    // <FlatList
-    //     keyExtractor={item => item.id.toString()}
-    //     renderItem={({ item, index }) => (
-    //         <View style={styles.itemStyle}>
-    //             <Text>{index + 1}:</Text>
-    //             <Text>{currentNickName}</Text>
-    //             <Text style={styles.fontStyleBold}>{item.endless_score}</Text>
-    //             {/* <Text style={{ color: '#0000ff' }} onPress={() => deleteScore(item.id)}>Delete</Text> */}
-    //         </View>
-    //     )}
-    //     data={scoreList}
-    //     showsVerticalScrollIndicator={true}
-    //     style={styles.flatListStyle}
-    // />
-
-    console.log('Practice board render')
     return (
         <View style={styles.flatListContainer}>
             <Pressable

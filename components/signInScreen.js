@@ -1,45 +1,20 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
-export default function CreateUser({ auth }) {
+export default function SignInUser({ auth }) {
     const [userSetUp, setUserSetUp] = useState({
         email: '',
         password: '',
     });
 
-    const validateEmail = (email) => {
-        // Regular expression for basic email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        if (!emailRegex.test(email)) {
-            Alert.alert('Invalid Email', 'Please enter a valid email address.\nExample: john.doe@example.com');
-        }
-
-        // Better email validation to consider with Firebase service
-    };
-
-    const validatePassword = (password) => {
-        if (password.trim() === '') {
-            Alert.alert('Invalid password', 'Password cannot be empty. It must be at least 6 characters.')
-        }
-        if (password.length < 6) {
-            Alert.alert('Invalid password', 'Password is too short. It must be at least 6 characters.')
-        }
-        // More validation with Regex for digits and special characters checking
-    };
-
-    const handleUserCreation = () => {
-        // Additional validation can be added here if needed
-        validateEmail(userSetUp.email);
-
-        createUserWithEmailAndPassword(auth, userSetUp.email, userSetUp.password)
+    const handleUserLogIn = () => {
+        signInWithEmailAndPassword(auth, userSetUp.email, userSetUp.password)
             .then((userCredential) => {
-                // Signed up 
+                // Signed in 
                 const user = userCredential.user;
-                // ...
                 setUserSetUp({ email: '', password: '' })
-                Alert.alert('Account Created', 'Congratulations! Your account has been created successfully!');
+                Alert.alert('Success', 'You are logged in!');
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -62,16 +37,15 @@ export default function CreateUser({ auth }) {
 
     };
 
-    console.log('Sign Up render')
+    console.log('Sign In render')
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Create account</Text>
+            <Text style={styles.title}>Sign In</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
                 value={userSetUp.email}
                 onChangeText={(text) => setUserSetUp({ ...userSetUp, email: text })}
-                onBlur={() => validateEmail(userSetUp.email)}
             />
             <TextInput
                 style={styles.input}
@@ -79,9 +53,8 @@ export default function CreateUser({ auth }) {
                 secureTextEntry
                 value={userSetUp.password}
                 onChangeText={(text) => setUserSetUp({ ...userSetUp, password: text })}
-                onBlur={() => validatePassword(userSetUp.password)}
             />
-            <Button title="Create account" onPress={handleUserCreation} />
+            <Button title="Sign In" onPress={handleUserLogIn} />
         </View>
     );
 }
