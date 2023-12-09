@@ -3,7 +3,7 @@ import { View, Text, Pressable, FlatList, StyleSheet } from 'react-native';
 import CreateUser from './signUpScreen';
 
 
-export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollapsible, app }) {
+export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollapsible, app, auth }) {
     console.log('Leaderboard render')
     return (
         <View style={styles.flatListContainer}>
@@ -18,7 +18,7 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
             {isCollapsed && (
                 <View style={{ flex: 1 }}>
                     <Text>Sign in or create an account to see the leaderboard</Text>
-                    <CreateUser app={app} />
+                    <CreateUser auth={auth} />
                 </View>
             )}
         </View>

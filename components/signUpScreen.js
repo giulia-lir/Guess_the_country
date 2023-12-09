@@ -1,15 +1,8 @@
-// SignUpScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
-
-export default function CreateUser({ app }) {
-    const auth = initializeAuth(app, {
-        persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-    });
+export default function CreateUser({ auth }) {
     const [userSetUp, setUserSetUp] = useState({
         email: '',
         password: '',
@@ -21,8 +14,11 @@ export default function CreateUser({ app }) {
 
         if (!emailRegex.test(email)) {
             Alert.alert('Invalid Email', 'Please enter a valid email address.\nExample: john.doe@example.com');
-            // You can set an error state or display an error message to the user
         }
+    };
+
+    const validatePassword = (password) => {
+        // Validation here
     };
 
     const handleUserCreation = () => {
@@ -46,22 +42,10 @@ export default function CreateUser({ app }) {
 
     };
 
-    /* const auth = getAuth();
-    createUserWithEmailAndPassword(auth, userSetUp.email, userSetUp.password)
-        .then((userCredential) => {
-            // Signed up 
-            const user = userCredential.user;
-            // ...
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // ..
-        }); */
-        console.log('Sign Up render')
+    console.log('Sign Up render')
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Sign In</Text>
+            <Text style={styles.title}>Create account</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
@@ -75,6 +59,7 @@ export default function CreateUser({ app }) {
                 secureTextEntry
                 value={userSetUp.password}
                 onChangeText={(text) => setUserSetUp({ ...userSetUp, password: text })}
+                onBlur={() => validatePassword(userSetUp.password)}
             />
             <Button title="Sign In" onPress={handleUserCreation} />
         </View>
