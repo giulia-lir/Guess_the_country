@@ -26,6 +26,7 @@ export default function PersonalCollapsibleFlatList({ isCollapsed, openCollapsib
     //     style={styles.flatListStyle}
     // />
 
+    console.log('Practice board render')
     return (
         <View style={styles.flatListContainer}>
             <Pressable

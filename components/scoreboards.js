@@ -36,6 +36,8 @@ export default function Scoreboards({ navigation }) {
     const PersonalCollapsibleWithState = withCollapsibleState(PersonalCollapsibleFlatList);
     const LeaderboardCollapsibleWithState = withCollapsibleState(LeaderboardCollapsibleFlatList);
 
+    console.log('Scoreboard render')
+
     const getScoreList = () => {
         db.transaction(tx => {
             tx.executeSql('select * from endless_scores;', [], (_, { rows }) => {
@@ -143,7 +145,7 @@ export default function Scoreboards({ navigation }) {
                     scoreList={scoreList}
                     currentNickName={currentNickName}
                 />
-                <LeaderboardCollapsibleWithState />
+                <LeaderboardCollapsibleWithState app={app} />
             </ScrollView>
         </LinearGradient>
     );
