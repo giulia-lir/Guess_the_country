@@ -27,7 +27,12 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
                 // If user is authenticated, fetch leaderboard data
                 onValue(ref(firedb, '/leaderBoard'), (snapshot) => {
                     const data = snapshot.val();
-                    setLeaderboardData(Object.values(data))
+                    if (data) {
+                        const leaderboardArray = Object.values(data);
+                        setLeaderboardData(leaderboardArray);
+                    } else {
+                        setLeaderboardData([]);
+                    }
                 })
             } else {
                 setUserAuthenticated(false);
@@ -53,12 +58,16 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
                     {userAuthenticated ? (
                         // If user is authenticated, show leaderboard
                         <ScrollView>
-                            {leaderboardData.map((item) => (
-                                <View key={item.id}>
-                                    <Text>{item.username}</Text>
-                                    <Text>{item.score}</Text>
-                                </View>
-                            ))}
+                            {leaderboardData.length > 0 ? (
+                                leaderboardData.map((item) => (
+                                    <View key={item.id}>
+                                        <Text>{item.username}</Text>
+                                        <Text>{item.score}</Text>
+                                    </View>
+                                ))
+                            ) : (
+                                <Text>No score saved in leaderboard yet.</Text>
+                            )}
                         </ScrollView>
                     ) : (
                         // If user is not authenticated, show sign-in and sign-up options
