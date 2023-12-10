@@ -44,7 +44,7 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
                 onValue(ref(firedb, '/leaderboard'), (snapshot) => {
                     const data = snapshot.val();
                     if (data) {
-                        setLeaderboardData(Object.values(data));
+                        setLeaderboardData(Object.values(data).sort((a, b) => b.highestScore - a.highestScore));
                         const isEligible = checkEligibilityForLeaderboard(Object.values(data), info);
                         setShowPushScoreButton(isEligible);
                     } else {
