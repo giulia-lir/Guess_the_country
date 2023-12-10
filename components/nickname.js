@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginVertical: 10,
         paddingHorizontal: 10,
+        backgroundColor: '#ecf0f1',
     },
     welcomeText: {
         fontFamily: 'PlaypenSansBold',

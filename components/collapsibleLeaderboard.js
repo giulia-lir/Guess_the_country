@@ -59,13 +59,10 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
     }, [auth, scoreList]);
 
     const checkEligibilityForLeaderboard = (leaderboardData, info) => {
-        console.log(leaderboardData.length)
         if (leaderboardData.length === 0) {
-            console.log('length was zero')
             return true;
         }
         if (leaderboardData.findIndex(entry => entry.playerId === info.playerId) === -1) {
-            console.log('find index true')
             return true;
         } else {
             if (info.highestScore > leaderboardData[leaderboardData.findIndex(entry => entry.playerId === info.playerId)].highestScore) {
@@ -109,12 +106,12 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
                 <Text style={styles.titleStyle}>See Leaderboard</Text>
             </Pressable>
             {isCollapsed && (
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     {userAuthenticated ? (
                         // If user is authenticated, show leaderboard
                         <ScrollView style={styles.scoreListStyle}>
-                            <Pressable onPress={handleSignOut}>
-                                <Text>Sign out</Text>
+                            <Pressable onPress={handleSignOut} style={[styles.pressableStyle, styles.signOutPressable]}>
+                                <Text style={styles.signOutText}>SIGN OUT</Text>
                             </Pressable>
                             {leaderboardData.length > 0 ? (
                                 leaderboardData.map((item, index) => (
@@ -135,10 +132,9 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
                         </ScrollView>
                     ) : (
                         // If user is not authenticated, show sign-in and sign-up options
-                        <View>
+                        <View style={styles.signingField}>
                             <Text>Sign in or create an account to see the leaderboard</Text>
                             <SignInUser auth={auth} />
-                            <Text>or</Text>
                             <CreateUser auth={auth} />
                         </View>
                     )}
@@ -197,4 +193,28 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: 'black'
     },
+    pressableStyle: {
+        backgroundColor: '#ecf0f1',
+        width: 90,
+        padding: 10,
+        margin: 10,
+        borderRadius: 15,
+        borderColor: 'black',
+        borderTopWidth: 1,
+        borderBottomWidth: 5,
+        borderRightWidth: 5,
+        borderLeftWidth: 1,
+        marginBottom: 20,
+    },
+    signOutPressable: {
+        marginLeft: '35%',
+    },
+    signOutText: {
+        color: 'red',
+    },
+    signingField: {
+        backgroundColor: '#ecf0f1',
+        padding: 10,
+        margin: 10
+    }
 });

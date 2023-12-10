@@ -126,9 +126,9 @@ export default EndlessQuizChallenge = ({ countries }) => {
     saveScore(endlessScore);
 
     return (
-      <View>
-        <Text>Game Over!</Text>
-        <Text>Your Score: {endlessScore}</Text>
+      <View style={styles.gameOverStyle}>
+        <Text style={[styles.fontStyle, styles.headerSize]}>Game Over!</Text>
+        <Text style={[styles.fontStyle, styles.headerSize]}>Your Score: {endlessScore}</Text>
         <Pressable title="Replay" onPress={() => restartEndlessChallenge()} style={styles.replayButtonStyle}>
           <MaterialIcons name="replay" size={24} color="black" />
           <Text style={styles.replayFontStyle}>REPLAY</Text>
@@ -213,6 +213,16 @@ const styles = StyleSheet.create({
     borderRightWidth: 5,
     borderTopWidth: 1,
     borderLeftWidth: 1,
+  },
+  gameOverStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(190, 154, 34, 0.6)',
+    padding: 20,
+    marginTop: 50,
+    marginLeft: 20,
+    marginRight: 20,
+    borderRadius: 15,
   },
   replayFontStyle: {
     fontSize: 10,
