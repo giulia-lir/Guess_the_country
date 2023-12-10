@@ -37,7 +37,6 @@ export default function SignInUser({ auth }) {
 
     };
 
-    console.log('Sign In render')
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Sign In</Text>
