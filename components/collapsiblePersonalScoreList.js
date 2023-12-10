@@ -1,15 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, Pressable, FlatList, StyleSheet, ScrollView } from 'react-native';
+import React from 'react';
+import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
 
 export default function PersonalCollapsibleFlatList({ isCollapsed, openCollapsible, scoreList, currentNickName }) {
-
-    /* const deleteScore = (id) => {
-        db.transaction(
-            tx => {
-                tx.executeSql('delete from endless_scores where id = ?;', [id]);
-            }, (_, error) => console.error('Error deleting score:', error), getScoreList
-        )
-    } */
 
     return (
         <View style={styles.flatListContainer}>
@@ -31,7 +23,6 @@ export default function PersonalCollapsibleFlatList({ isCollapsed, openCollapsib
                                     <Text>{index + 1}:</Text>
                                     <Text>{currentNickName}</Text>
                                     <Text style={styles.fontStyleBold}>{item.endless_score}</Text>
-                                    {/* <Text style={{ color: '#0000ff' }} onPress={() => deleteScore(item.id)}>Delete</Text> */}
                                 </View>
                             ))}
                         </ScrollView>
