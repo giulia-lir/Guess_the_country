@@ -44,18 +44,20 @@ export default function Scoreboards({ navigation }) {
 
     const getNickname = () => {
         console.log('getnickname called')
-        db.transaction(tx => {
-            tx.executeSql('select nickname from player_info where id = ?;', [1], (_, { rows }) => {
-                const playerInfo = rows._array[0];
-                console.log('load sql playerinfo', playerInfo)
-                setCurrentNickname(playerInfo ? playerInfo.nickname : null);
-                //setNewNickname(playerInfo ? playerInfo.nickname : '');
-                setIsNicknameSaved(playerInfo ? true : false);
-                //console.log(rows._array)
-            }, (_, error) => {
-                console.error('Error fetching nickname:', error);
+        setTimeout(() => {
+            db.transaction(tx => {
+                tx.executeSql('select nickname from player_info where id = ?;', [1], (_, { rows }) => {
+                    const playerInfo = rows._array[0];
+                    console.log('load sql playerinfo', playerInfo)
+                    setCurrentNickname(playerInfo ? playerInfo.nickname : null);
+                    //setNewNickname(playerInfo ? playerInfo.nickname : '');
+                    setIsNicknameSaved(playerInfo ? true : false);
+                    //console.log(rows._array)
+                }, (_, error) => {
+                    console.error('Error fetching nickname:', error);
+                });
             });
-        });
+        }, 1000)
     };
 
     console.log('Scoreboard render')
