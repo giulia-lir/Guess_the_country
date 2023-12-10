@@ -1,11 +1,10 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Home from './components/home';
 import Scoreboards from './components/scoreboards';
 import { useCallback } from 'react';
 import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -30,8 +29,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator screenOptions={{
-        tabBarStyle: styles.navigatorTabsStyle, // overall style
-        // tabStyle: styles.tabStyle,  specific tab style
+        tabBarStyle: styles.navigatorTabsStyle,
         tabBarLabelStyle: styles.tabFontStyle,
       }} onLayout={onLayoutRootView}>
         <Tab.Screen
