@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Pressable, FlatList, StyleSheet, ScrollView } from 'react-native';
-import { getDatabase, ref, push, onValue } from 'firebase/database';
+import { Alert, View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { ref, push, onValue } from 'firebase/database';
+import { signOut } from "firebase/auth";
 import CreateUser from './signUpScreen';
 import SignInUser from './signInScreen';
 
@@ -9,15 +10,14 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
     const [userAuthenticated, setUserAuthenticated] = useState(false);
     const [leaderboardData, setLeaderboardData] = useState([]);
 
-
-    // useEffect(() => {
-    //     onValue(ref(firedb, '/leaderBoard'), (snapshot) => {
-    //         const data = snapshot.val();
-    //         // Object.values() extracts the values from the key in object array, Object.keys() is used to get the keys instead
-    //         setLeaderboardData(Object.values(data))
-    //     })
-    // }, []);
-
+    const handleSignOut = () => {
+        signOut(auth).then(() => {
+            setUserAuthenticated(false);
+            Alert.alert('Sign Out Successful', 'You have been successfully signed out.');
+        }).catch((error) => {
+            Alert.alert('Sign Out Failed', 'An error occurred while signing out. Please try again.');
+        });
+    };
 
     useEffect(() => {
         // Check user authentication status
@@ -58,6 +58,9 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
                     {userAuthenticated ? (
                         // If user is authenticated, show leaderboard
                         <ScrollView>
+                            <Pressable onPress={handleSignOut}>
+                                <Text>Sign out</Text>
+                            </Pressable>
                             {leaderboardData.length > 0 ? (
                                 leaderboardData.map((item) => (
                                     <View key={item.id}>
