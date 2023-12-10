@@ -54,12 +54,6 @@ export default function Home() {
         }
       });
     }, () => console.error("Error when loading from DB"),)
-    /*
-    
-    db.transaction(tx => {
-      tx.executeSql('drop table if exists countries;');
-    }, () => console.error("Error when deliting tables in DB"), ); 
-    */
   }, []);
 
   const fetchCountries = () => {
