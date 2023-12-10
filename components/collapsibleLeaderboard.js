@@ -6,9 +6,17 @@ import CreateUser from './signUpScreen';
 import SignInUser from './signInScreen';
 
 
-export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollapsible, app, auth, firedb }) {
+export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollapsible, scoreList, currentNickName, app, auth, firedb }) {
     const [userAuthenticated, setUserAuthenticated] = useState(false);
     const [leaderboardData, setLeaderboardData] = useState([]);
+    const [playerInfo, setPlayerInfo] = useState({
+        playerId: null,
+        nickname: currentNickName,
+        highestScore: scoreList.length > 0 ? scoreList[0].endless_score : 0,
+    });
+    const [showPushScoreButton, setShowPushScoreButton] = useState(false);
+
+    console.log(playerInfo)
 
     const handleSignOut = () => {
         signOut(auth).then(() => {
@@ -30,18 +38,75 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
                     if (data) {
                         const leaderboardArray = Object.values(data);
                         setLeaderboardData(leaderboardArray);
+                        const isEligible = checkEligibilityForLeaderboard(leaderboardArray);
+                        setShowPushScoreButton(isEligible);
                     } else {
                         setLeaderboardData([]);
+                        setShowPushScoreButton(true); // because the array is empty so can push score
                     }
                 })
             } else {
                 setUserAuthenticated(false);
             }
         });
-
         // Cleanup subscription when component unmounts
         return () => unsubscribe();
-    }, [auth]);
+    }, [auth, scoreList]);
+
+    const checkEligibilityForLeaderboard = (leaderboardArray) => {
+        if (leaderboardArray.length === 0) {
+            return true;
+        }
+
+        // Assuming leaderboard array is sorted in DESC order
+        const lowestScore = leaderboardArray[leaderboardArray.length - 1].score;
+        return userHighscore > lowestScore;
+    };
+
+    const handlePushScore = () => {
+        console.log('Leaderboard state before push: ', leaderboardData)
+        // Check if the user is authenticated
+        if (userAuthenticated) {
+            const userUid = auth.currentUser.uid;
+            if (playerInfo.playerId === null) {
+                setPlayerInfo((prevPlayerInfo) => ({
+                    ...prevPlayerInfo,
+                    playerId: userUid,
+                }));
+            }
+            setPlayerInfo({ ...playerInfo, playerId: userUid })
+            console.log('See the player info: ', playerInfo)
+            const userEntryIndex = leaderboardData.findIndex(entry => entry.uid === playerInfo.playerId);
+            console.log(userEntryIndex)
+
+            if (userEntryIndex !== -1) {
+                // User already has an entry in the leaderboard
+                if (playerInfo.score > leaderboardData[userEntryIndex].score) {
+                    // Update the score if the new score is higher
+                    leaderboardData[userEntryIndex].score = playerInfo.score;
+                    // Update the leaderboard in Firebase
+                    push(ref(firedb, '/leaderboard'), playerInfo);
+                }
+            } else {
+                // User doesn't have an entry, add a new one
+                push(ref(firedb, '/leaderboard'), playerInfo);
+            }
+
+            // Refresh the leaderboard data
+            onValue(ref(firedb, '/leaderboard'), (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const leaderboardArray = Object.values(data);
+                    setLeaderboardData(leaderboardArray);
+                } else {
+                    setLeaderboardData([]);
+                }
+            });
+
+            setShowPushScoreButton(false);
+            console.log('Leaderboard state after push: ', leaderboardData);
+        }
+    };
 
     return (
         <View style={styles.flatListContainer}>
@@ -62,14 +127,19 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
                                 <Text>Sign out</Text>
                             </Pressable>
                             {leaderboardData.length > 0 ? (
-                                leaderboardData.map((item) => (
-                                    <View key={item.id}>
-                                        <Text>{item.username}</Text>
+                                leaderboardData.map((item, index) => (
+                                    <View key={index}>
+                                        <Text>{item.nickname}</Text>
                                         <Text>{item.score}</Text>
                                     </View>
                                 ))
                             ) : (
                                 <Text>No score saved in leaderboard yet.</Text>
+                            )}
+                            {showPushScoreButton && (
+                                <Pressable onPress={handlePushScore}>
+                                    <Text>Push Score</Text>
+                                </Pressable>
                             )}
                         </ScrollView>
                     ) : (

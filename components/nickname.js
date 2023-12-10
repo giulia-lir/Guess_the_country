@@ -1,24 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Button, TextInput } from 'react-native';
 
-export default function Nickname({ db, currentNickName, setCurrentNickname }) {
-    //const [currentNickName, setCurrentNickname] = useState('');
+export default function Nickname({ db, currentNickName, setCurrentNickname, getNickname, isNicknameSaved, setIsNicknameSaved }) {
     const [newNickName, setNewNickname] = useState('');
-    const [isNicknameSaved, setIsNicknameSaved] = useState(false);
-
-    const getNickname = () => {
-        db.transaction(tx => {
-            tx.executeSql('select nickname from player_info where id = ?;', [1], (_, { rows }) => {
-                const playerInfo = rows._array[0];
-                setCurrentNickname(playerInfo ? playerInfo.nickname : '');
-                //setNewNickname(playerInfo ? playerInfo.nickname : '');
-                setIsNicknameSaved(playerInfo ? true : false);
-                //console.log(rows._array)
-            }, (_, error) => {
-                console.error('Error fetching nickname:', error);
-            });
-        });
-    };
 
     const cancelEdit = () => {
         setNewNickname(currentNickName);
@@ -50,9 +34,9 @@ export default function Nickname({ db, currentNickName, setCurrentNickname }) {
         }
     };
 
-    useEffect(() => {
-        getNickname();
-    }, []);
+    // useEffect(() => {
+    //     getNickname();
+    // }, []);
 
     return (
         <View>
@@ -63,7 +47,7 @@ export default function Nickname({ db, currentNickName, setCurrentNickname }) {
                         style={styles.inputStyle}
                         value={newNickName}
                         onChangeText={(text) => setNewNickname(text)}
-                        placeholder="Nickname"
+                        placeholder={currentNickName ? currentNickName : "Nickname"}
                         maxLength={20}
                     />
                     <Button title="Save Nickname" onPress={saveNickname} />

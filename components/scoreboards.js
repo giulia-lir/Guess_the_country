@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { initializeApp } from "firebase/app";
 import { getDatabase, push, ref, onValue } from 'firebase/database';
-import { getAuth } from 'firebase/auth';
-// import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import withCollapsibleState from './collapsibleHighFunction';
 import PersonalCollapsibleFlatList from './collapsiblePersonalScoreList';
 import LeaderboardCollapsibleFlatList from './collapsibleLeaderboard';
@@ -30,17 +30,33 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const firedb = getDatabase(app);
-const auth = getAuth();
-// const auth = initializeAuth(app, {
-//     persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-// });
+const auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+});
 
 export default function Scoreboards({ navigation }) {
     const [scoreList, setScoreList] = useState([]);
-    const [currentNickName, setCurrentNickname] = useState('');
+    const [currentNickName, setCurrentNickname] = useState(null);
+    const [isNicknameSaved, setIsNicknameSaved] = useState(false);
 
     const PersonalCollapsibleWithState = withCollapsibleState(PersonalCollapsibleFlatList);
     const LeaderboardCollapsibleWithState = withCollapsibleState(LeaderboardCollapsibleFlatList);
+
+    const getNickname = () => {
+        console.log('getnickname called')
+        db.transaction(tx => {
+            tx.executeSql('select nickname from player_info where id = ?;', [1], (_, { rows }) => {
+                const playerInfo = rows._array[0];
+                console.log('load sql playerinfo', playerInfo)
+                setCurrentNickname(playerInfo ? playerInfo.nickname : null);
+                //setNewNickname(playerInfo ? playerInfo.nickname : '');
+                setIsNicknameSaved(playerInfo ? true : false);
+                //console.log(rows._array)
+            }, (_, error) => {
+                console.error('Error fetching nickname:', error);
+            });
+        });
+    };
 
     console.log('Scoreboard render')
 
@@ -73,6 +89,11 @@ export default function Scoreboards({ navigation }) {
         }, [])
     );
 
+    useEffect(() => {
+        getNickname();
+        getScoreList();
+    }, []);
+
     return (
         <LinearGradient
             colors={['#6200EA', '#4A148C', '#1565C0', '#00C853', '#FFD600', '#FF6D00', '#D500F9']}
@@ -82,7 +103,10 @@ export default function Scoreboards({ navigation }) {
         >
             <Nickname
                 db={db}
+                getNickname={getNickname}
                 currentNickName={currentNickName}
+                isNicknameSaved={isNicknameSaved}
+                setIsNicknameSaved={setIsNicknameSaved}
                 setCurrentNickname={setCurrentNickname}
             />
             {/* <Button title="Save to Leaderboard" onPress={saveScore} /> */}
@@ -92,6 +116,8 @@ export default function Scoreboards({ navigation }) {
                     currentNickName={currentNickName}
                 />
                 <LeaderboardCollapsibleWithState
+                    scoreList={scoreList}
+                    currentNickName={currentNickName}
                     app={app}
                     auth={auth}
                     firedb={firedb}
