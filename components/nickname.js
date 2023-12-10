@@ -34,10 +34,6 @@ export default function Nickname({ db, currentNickName, setCurrentNickname, getN
         }
     };
 
-    // useEffect(() => {
-    //     getNickname();
-    // }, []);
-
     return (
         <View>
             {!isNicknameSaved ? (
@@ -57,7 +53,6 @@ export default function Nickname({ db, currentNickName, setCurrentNickname, getN
                 <View style={styles.editButtonContainer}>
                     <Text style={styles.welcomeText}>Hello {currentNickName}!</Text>
                     <Button title="Edit" onPress={openEditField} />
-                    {/* <Button title="Delete table" onPress={deleteNicknameTable} /> */}
                 </View>
             )}
         </View>
