@@ -33,10 +33,8 @@ export default function Home() {
       tx.executeSql('create table if not exists player_info (id integer primary key not null, nickname text);');
     }, () => console.error("Error when creating player_info table"),);
 
-    console.log('hi im elfo')
     db.transaction(tx => {
       tx.executeSql('select * from countries', [], (_, { rows }) => {
-        console.log(rows._array.length)
         if (rows._array.length > 0) {
           const countriesFromDB = Array.from(rows._array).map(row => ({
             id: row.id,
@@ -45,7 +43,6 @@ export default function Home() {
             region: row.region,
           }));
 
-          //console.log('Countries from DB:', countriesFromDB); // Log the countries fetched from the database
           setCountriesList(countriesFromDB);
 
         } else {
@@ -92,7 +89,6 @@ export default function Home() {
         .catch(err => {
           Alert.alert('Error', err.message)
         });
-
     }
   }
 
@@ -137,13 +133,10 @@ export default function Home() {
     }
   });
 
-  // Sunset feel: ['#03503B','#025362','#03C5BE','#FF8C00', '#FF5733', '#FF414D', '#D32F2F','#025362']
-  // Sunny beach view: ['#87CEEB', '#00BFFF', '#FFD700', '#FF6347', '#CD5C5C']
-  // Beach colors: ['#FFE4C4', '#D2B48C', '#87CEEB', '#556B2F']
   return (
     <LinearGradient
       colors={['#FF8C00', '#FFD700', '#FFE4C4', '#D2B48C', '#87CEEB', '#556B2F']}
-      start={{ x: 0, y: 1 }}     // Adjust start and end values
+      start={{ x: 0, y: 1 }}
       end={{ x: 0, y: 0 }}
       style={styles.homeViewStyle}>
       {/* Picker rendered only if no game is started */}
@@ -197,7 +190,6 @@ export default function Home() {
         <ScrollView>
           <EndlessQuizChallenge countries={countriesList} />
           {/* Display quit button if game is in progress */}
-          {/* <Button title="Quit" onPress={handleQuitEndlessQuiz} /> */}
           <Pressable onPress={handleQuitEndlessQuiz} style={styles.quitPressableStyle}>
             <FontAwesome5 name="stop" size={24} color="red" /><Text style={styles.quitFontStyle}>QUIT</Text>
           </Pressable>
