@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Alert, View, ScrollView, StyleSheet, Text, Button, Pressable } from 'react-native';
+import { Alert, View, ScrollView, StyleSheet, Text, Pressable } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as SQLite from 'expo-sqlite';
 import { Ionicons } from '@expo/vector-icons';
