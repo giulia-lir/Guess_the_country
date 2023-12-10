@@ -68,6 +68,7 @@ export default function CreateUser({ auth }) {
             <Text style={styles.title}>Create account</Text>
             <TextInput
                 style={styles.input}
+                inputMode='email'
                 placeholder="Email"
                 value={userSetUp.email}
                 onChangeText={(text) => setUserSetUp({ ...userSetUp, email: text })}

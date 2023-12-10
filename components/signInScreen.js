@@ -43,6 +43,7 @@ export default function SignInUser({ auth }) {
             <Text style={styles.title}>Sign In</Text>
             <TextInput
                 style={styles.input}
+                inputMode='email'
                 placeholder="Email"
                 value={userSetUp.email}
                 onChangeText={(text) => setUserSetUp({ ...userSetUp, email: text })}
