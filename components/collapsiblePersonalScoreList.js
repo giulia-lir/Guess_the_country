@@ -25,7 +25,7 @@ export default function PersonalCollapsibleFlatList({ isCollapsed, openCollapsib
             {isCollapsed && (
                 <View style={{ flex: 1 }}>
                     {scoreList.length > 0 ? (
-                        <ScrollView style={styles.flatListStyle}>
+                        <ScrollView style={styles.scoreListStyle}>
                             {scoreList.map((item, index) => (
                                 <View key={item.id} style={styles.itemStyle}>
                                     <Text>{index + 1}:</Text>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: 'black'
     },
-    flatListStyle: {
-        width: '80%',
+    scoreListStyle: {
+        width: '90%',
     },
 });
