@@ -30,14 +30,11 @@ export default function CreateUser({ auth }) {
     };
 
     const handleUserCreation = () => {
-        // Additional validation can be added here if needed
         validateEmail(userSetUp.email);
 
         createUserWithEmailAndPassword(auth, userSetUp.email, userSetUp.password)
             .then((userCredential) => {
-                // Signed up 
                 const user = userCredential.user;
-                // ...
                 setUserSetUp({ email: '', password: '' })
                 Alert.alert('Account Created', 'Congratulations! Your account has been created successfully!');
             })
@@ -54,15 +51,11 @@ export default function CreateUser({ auth }) {
                 } else if (errorCode === 'auth/weak-password') {
                     alertMessage = 'The password is too weak. Please choose a stronger password.';
                 }
-
-                console.log(errorCode, errorMessage);
-
                 Alert.alert(alertTitle, alertMessage);
             });
 
     };
 
-    console.log('Sign Up render')
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Create account</Text>

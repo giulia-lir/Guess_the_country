@@ -90,13 +90,6 @@ export default EndlessQuizChallenge = ({ countries }) => {
     setButtonColor(newButtonColor);
   };
 
-  /* const saveScore = () => {
-    db.transaction(tx => {
-      tx.executeSql('insert into endless_scores (endless_score) values (?);', [endlessScore]);
-    }, (_, error) => {
-      console.error("Error during insert:", error);
-    },    )
-  } */
   const saveScore = (currentScore) => {
     db.transaction(
       tx => {
@@ -130,7 +123,6 @@ export default EndlessQuizChallenge = ({ countries }) => {
   }, [])
 
   if (gameOver) {
-
     saveScore(endlessScore);
 
     return (

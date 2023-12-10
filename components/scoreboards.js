@@ -4,7 +4,7 @@ import * as SQLite from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { initializeApp } from "firebase/app";
-import { getDatabase, push, ref, onValue } from 'firebase/database';
+import { getDatabase } from 'firebase/database';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import withCollapsibleState from './collapsibleHighFunction';
@@ -43,24 +43,18 @@ export default function Scoreboards({ navigation }) {
     const LeaderboardCollapsibleWithState = withCollapsibleState(LeaderboardCollapsibleFlatList);
 
     const getNickname = () => {
-        console.log('getnickname called')
         setTimeout(() => {
             db.transaction(tx => {
                 tx.executeSql('select nickname from player_info where id = ?;', [1], (_, { rows }) => {
                     const playerInfo = rows._array[0];
-                    console.log('load sql playerinfo', playerInfo)
                     setCurrentNickname(playerInfo ? playerInfo.nickname : null);
-                    //setNewNickname(playerInfo ? playerInfo.nickname : '');
                     setIsNicknameSaved(playerInfo ? true : false);
-                    //console.log(rows._array)
                 }, (_, error) => {
                     console.error('Error fetching nickname:', error);
                 });
             });
         }, 1000)
     };
-
-    console.log('Scoreboard render')
 
     const getScoreList = () => {
         db.transaction(tx => {
@@ -70,19 +64,6 @@ export default function Scoreboards({ navigation }) {
             }
             ), (_, error) => console.error('Error fetching scores:', error)
         });
-    }
-
-    const deleteNicknameTable = () => {
-        console.log("Delete the damn table")
-        db.transaction(
-            tx => {
-                tx.executeSql('drop table if exists player_info;');
-            }, (_, error) => console.error('Error deleting player_info table:', error)
-        )
-    }
-
-    const saveScore = () => {
-        push(ref(firedb, 'leaderBoard/'), scoreList[0].endless_score);
     }
 
     useFocusEffect(
@@ -111,7 +92,6 @@ export default function Scoreboards({ navigation }) {
                 setIsNicknameSaved={setIsNicknameSaved}
                 setCurrentNickname={setCurrentNickname}
             />
-            {/* <Button title="Save to Leaderboard" onPress={saveScore} /> */}
             <ScrollView>
                 <PersonalCollapsibleWithState
                     scoreList={scoreList}

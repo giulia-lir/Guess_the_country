@@ -28,7 +28,7 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
       }
     });
 
-    const randomCountry = filteredCountries[Math.floor(Math.random() * filteredCountries.length)]; // Need to check and avoid duplicates
+    const randomCountry = filteredCountries[Math.floor(Math.random() * filteredCountries.length)];
     const options = getRandomOptions(filteredCountries, randomCountry);
 
     setCorrectAnswer(randomCountry.name);
@@ -154,7 +154,6 @@ export default GuessTheFlagGame = ({ countries, selectedRegion }) => {
   );
 };
 
-// Make it fabulous
 const styles = StyleSheet.create({
   viewStyle: {
     justifyContent: 'center',
