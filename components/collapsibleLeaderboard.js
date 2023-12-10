@@ -16,8 +16,6 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
     });
     const [showPushScoreButton, setShowPushScoreButton] = useState(false);
 
-    console.log(playerInfo)
-
     const handleSignOut = () => {
         signOut(auth).then(() => {
             setUserAuthenticated(false);
@@ -61,59 +59,33 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
     }, [auth, scoreList]);
 
     const checkEligibilityForLeaderboard = (leaderboardData, info) => {
-        console.log('eligibility check starts')
-        // Check if user is authenticated
-        //console.log('userAuth: ', userAuthenticated)
-        // if (userAuthenticated) {
-        // If leaderboard is empty
         console.log(leaderboardData.length)
         if (leaderboardData.length === 0) {
             console.log('length was zero')
             return true;
         }
-console.log('the heck you print here', leaderboardData.findIndex(entry => entry.playerId === info.playerId))
-console.log('just leaderboard player id: ', leaderboardData.findIndex(entry => entry.playerId))
-console.log('info player id: ', info.playerId)
-        if (leaderboardData.findIndex(entry => entry.playerId === info.playerId) === -1) { //playerInfo.playerId
+        if (leaderboardData.findIndex(entry => entry.playerId === info.playerId) === -1) {
             console.log('find index true')
             return true;
         } else {
-            console.log('check score:' + info.highestScore + ', against leaderboard:' + leaderboardData[leaderboardData.findIndex(entry => entry.playerId === info.playerId)].highestScore)
             if (info.highestScore > leaderboardData[leaderboardData.findIndex(entry => entry.playerId === info.playerId)].highestScore) {
-
-                console.log('find index nested if true')
                 return true;
             }
-            console.log('find index false')
             return false;
         }
-        // };
-        // console.log('eligibility if failed')
-        // return false;
-
     };
 
     const handlePushScore = () => {
-        //console.log('Leaderboard state before push: ', leaderboardData)
-        // Check if the user is authenticated
-        // if (userAuthenticated) {
         const userEntryIndex = leaderboardData.findIndex(entry => entry.playerId === playerInfo.playerId);
-        //console.log(leaderboardData.findIndex(entry => entry.playerId === playerInfo.playerId))
 
         if (userEntryIndex !== -1) {
-            // User already has an entry in the leaderboard
             if (playerInfo.highestScore > leaderboardData[userEntryIndex].highestScore) {
-                // Update the score if the new score is higher
                 leaderboardData[userEntryIndex].highestScore = playerInfo.highestScore;
-                // Update the leaderboard in Firebase
                 update(child(ref(firedb, '/leaderboard'), playerInfo.playerId), playerInfo);
             }
         } else {
-            // User doesn't have an entry, add a new one
             push(ref(firedb, '/leaderboard'), playerInfo);
         }
-
-        // Refresh the leaderboard data
         onValue(ref(firedb, '/leaderboard'), (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -123,9 +95,7 @@ console.log('info player id: ', info.playerId)
                 setLeaderboardData([]);
             }
         });
-
         setShowPushScoreButton(false);
-        // console.log('Leaderboard state after push: ', leaderboardData);
     }
 
     return (
@@ -172,10 +142,6 @@ console.log('info player id: ', info.playerId)
                             <CreateUser auth={auth} />
                         </View>
                     )}
-                    {/* <Text>Sign in or create an account to see the leaderboard</Text>
-                    <SignInUser auth={auth} />
-                    <Text>or</Text>
-                    <CreateUser auth={auth} /> */}
                 </View>
             )}
         </View >
