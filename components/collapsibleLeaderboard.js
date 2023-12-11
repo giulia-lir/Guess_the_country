@@ -86,7 +86,7 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
         onValue(ref(firedb, '/leaderboard'), (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                const leaderboardArray = Object.values(data);
+                const leaderboardArray = Object.values(data).sort((a, b) => b.highestScore - a.highestScore);
                 setLeaderboardData(leaderboardArray);
             } else {
                 setLeaderboardData([]);
@@ -110,9 +110,16 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
                     {userAuthenticated ? (
                         // If user is authenticated, show leaderboard
                         <ScrollView style={styles.scoreListStyle}>
-                            <Pressable onPress={handleSignOut} style={[styles.pressableStyle, styles.signOutPressable]}>
-                                <Text style={styles.signOutText}>SIGN OUT</Text>
-                            </Pressable>
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                <Pressable onPress={handleSignOut} style={[styles.pressableStyle, styles.signOutPressable]}>
+                                    <Text style={styles.signOutText}>SIGN OUT</Text>
+                                </Pressable>
+                                {showPushScoreButton && (
+                                    <Pressable onPress={handlePushScore} style={styles.pressableStyle}>
+                                        <Text>Add Your Score</Text>
+                                    </Pressable>
+                                )}
+                            </View>
                             {leaderboardData.length > 0 ? (
                                 leaderboardData.map((item, index) => (
                                     <View key={index} style={styles.itemStyle}>
@@ -123,11 +130,6 @@ export default function LeaderboardCollapsibleFlatList({ isCollapsed, openCollap
                                 ))
                             ) : (
                                 <Text>No score saved in leaderboard yet.</Text>
-                            )}
-                            {showPushScoreButton && (
-                                <Pressable onPress={handlePushScore}>
-                                    <Text>Push Score</Text>
-                                </Pressable>
                             )}
                         </ScrollView>
                     ) : (
@@ -194,6 +196,7 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     pressableStyle: {
+        flex: 1,
         backgroundColor: '#ecf0f1',
         width: 90,
         padding: 10,
@@ -205,9 +208,6 @@ const styles = StyleSheet.create({
         borderRightWidth: 5,
         borderLeftWidth: 1,
         marginBottom: 20,
-    },
-    signOutPressable: {
-        marginLeft: '35%',
     },
     signOutText: {
         color: 'red',
