@@ -1,96 +1,19 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Alert, View, ScrollView, StyleSheet, Text, Pressable } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, Pressable } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import * as SQLite from 'expo-sqlite';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import GuessTheFlagGame from './game';
 import EndlessQuizChallenge from './endless_quiz';
 
-const db = SQLite.openDatabase('countriesdb.db');
-const API_URL = 'https://restcountries.com/v2/all';
+export default function Home({countriesList}) {
 
-export default function Home() {
-
-  const [countriesList, setCountriesList] = useState([]);
   const [startGame, setStartGame] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState();
   const uniqueRegions = new Set();
   const [startEndlessQuiz, setStartEndlessQuiz] = useState(false);
-
-  useEffect(() => {
-    db.transaction(tx => {
-      tx.executeSql('create table if not exists countries (id integer primary key not null, name text, flag text, region text);');
-    }, () => console.error("Error when creating countries table"),);
-
-    db.transaction(tx => {
-      tx.executeSql('create table if not exists endless_scores (id integer primary key not null, endless_score integer);');
-    }, () => console.error("Error when creating endless_score table"),);
-
-    db.transaction(tx => {
-      tx.executeSql('create table if not exists player_info (id integer primary key not null, nickname text);');
-    }, () => console.error("Error when creating player_info table"),);
-
-    db.transaction(tx => {
-      tx.executeSql('select * from countries', [], (_, { rows }) => {
-        if (rows._array.length > 0) {
-          const countriesFromDB = Array.from(rows._array).map(row => ({
-            id: row.id,
-            name: row.name,
-            flag: row.flag,
-            region: row.region,
-          }));
-
-          setCountriesList(countriesFromDB);
-
-        } else {
-          console.log('No records found in the database.');
-          fetchCountries();
-        }
-      });
-    }, () => console.error("Error when loading from DB"),)
-  }, []);
-
-  const fetchCountries = () => {
-    if (countriesList.length === 0) {
-      fetch(API_URL)
-        .then(response => response.json())
-        .then(data => {
-          const countries = data.map(country => ({
-            name: country.name,
-            flag: country.flags.png,
-            region: country.region,
-          })
-          );
-
-          setCountriesList(countries);
-
-          countries.forEach(country => {
-            db.transaction(tx => {
-              tx.executeSql(
-                'INSERT OR IGNORE INTO countries (name, flag, region) VALUES (?, ?, ?);',
-                [country.name, country.flag, country.region],
-                (_, resultSet) => {
-                  if (resultSet.rowsAffected > 0) {
-                    console.log(`Country "${country.name}" inserted into the database.`);
-                  } else {
-                    console.log(`Country "${country.name}" already exists in the database.`);
-                  }
-                },
-                (_, error) => {
-                  console.error(`Error inserting country "${country.name}" into the database:`, error);
-                }
-              );
-            });
-          });
-        })
-        .catch(err => {
-          Alert.alert('Error', err.message)
-        });
-    }
-  }
 
   const pickerRef = useRef();
 
